@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <b>{{ category_name }} -> {{ product.id }}</b>
+    <br>
+    {% if product.image_url %} <img src="{{ product.image_url }}" alt="Картинка"> {% else %} Картинки нет {% endif %}
+    <br>
+    <b>{{ product.brand_name }} {{ product.name }}</b>
+    <br>
+    {{ product.clicks }}
+    <br>
+    {{ product.description }}
+    <br>
+    {{ brand_links }}
+{% endblock %}

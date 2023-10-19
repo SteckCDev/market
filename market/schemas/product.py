@@ -1,12 +1,18 @@
 from uuid import UUID
 
-from pydantic import BaseModel, PositiveInt
+from pydantic import BaseModel
 
 
 class Product(BaseModel):
-    id: UUID
-    category_id: UUID
+    id: int
+    category_id: int
     brand_id: UUID
     name: str
-    description: str
-    clicks: PositiveInt
+    description: str = None
+    image_url: str = None
+    clicks: int
+
+
+class ProductUI(Product):
+    brand_name: str
+    rating: float | None = None

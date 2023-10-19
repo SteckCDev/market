@@ -4,9 +4,10 @@ from pydantic import BaseModel, PositiveInt
 
 
 class Category(BaseModel):
-    id: UUID
+    id: int
     name: str
 
 
 class CategoryUI(Category):
-    products_count: PositiveInt = 0
+    products_count: PositiveInt
+    link: str

@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+    {% if categories %}
+        {% for category in categories %}
+            <div class="object">
+                <a href="{{ category.link }}">({{ category.id }}) {{ category.name }}</a>
+                <br>
+                Товаров: {{ category.products_count }}
+            </div>
+        {% endfor %}
+    {% else %}
+        Каталог пуст
+    {% endif %}
+{% endblock %}

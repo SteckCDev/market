@@ -5,7 +5,8 @@ from pydantic import BaseModel
 
 
 class Review(BaseModel):
-    id: UUID
+    id: int
     product_id: UUID
     review: str
+    rating: int
     posted_on: datetime

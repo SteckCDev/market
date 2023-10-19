@@ -11,16 +11,15 @@ class Settings(BaseSettings):
     class Config:
         env_file = ENV_DEVELOPMENT if isfile(ENV_DEVELOPMENT) else ENV_PRODUCTION
 
-    postgres_host: str
-    postgres_port: int
-    postgres_user: str
-    postgres_password: str
-    postgres_database: str
+    project_name: str
+
+    database_path: str
 
     admin_login: str
     admin_password: str
 
     template_folder: str
+    static_folder: str
 
 
 settings = Settings()

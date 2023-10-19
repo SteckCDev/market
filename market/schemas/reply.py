@@ -5,7 +5,7 @@ from pydantic import BaseModel
 
 
 class Reply(BaseModel):
-    id: UUID
-    review_id: UUID
+    id: int
+    review_id: int
     reply: str
     posted_on: datetime
