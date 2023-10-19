@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <form method="post" action="/reauth">
+        <input type="hidden" name="redirect_to" value="{{ redirect_to }}">
+        <input type="submit" value="Продолжить">
+    </form>
+{% endblock %}

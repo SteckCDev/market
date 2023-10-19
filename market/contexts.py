@@ -23,6 +23,15 @@ def get_error_context(request: Request, error: str) -> dict:
     }
 
 
+def get_reauth_context(request: Request, redirect_to: str) -> dict:
+    return {
+        "request": request,
+        "project_name": settings.project_name,
+        "title": "Проверка",
+        "redirect_to": redirect_to
+    }
+
+
 def get_index_context(request: Request) -> dict:
     return {
         "request": request,

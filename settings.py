@@ -13,10 +13,12 @@ class Settings(BaseSettings):
 
     project_name: str
 
-    database_path: str
+    secret_key: str
 
     admin_login: str
     admin_password: str
+
+    database_path: str
 
     template_folder: str
     static_folder: str
