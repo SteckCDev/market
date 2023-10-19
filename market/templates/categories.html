@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+
+{% block content %}
+    {% for category in categories %}
+        <div class="object">Name: {{ category.name }}<br>Contains: {{ category.products_count }}<br>ID: {{ category.id }}</div>
+    {% endfor %}
+{% endblock %}
