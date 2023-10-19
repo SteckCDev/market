@@ -5,7 +5,9 @@
         {% for product in products %}
             <div class="object">
                 {% if product.image_url %} <img src="{{ product.image_url }}" alt="Картинка"> {% else %} Картинки нет {% endif %}
-                ({{ product.category_id }} / {{ product.id }}) <b>({{ product.brand_id }}) {{ product.brand_name }}</b> {{ product.name }}
+                <a href="{{ product.link }}">
+                    ({{ product.category_id }} / {{ product.id }}) <b>({{ product.brand_id }}) {{ product.brand_name }}</b> {{ product.name }}
+                </a>
                 <br>
                 Переходов: {{ product.clicks }}
                 Рейтинг: {% if product.rating %} {{ product.rating }} {% else %} Оценок нет {% endif %}

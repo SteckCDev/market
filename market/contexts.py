@@ -6,7 +6,8 @@ from settings import settings
 from .serializers import (
     serialize_index,
     serialize_category,
-    serialize_product
+    serialize_product,
+    serialize_reviews
 )
 
 
@@ -46,9 +47,10 @@ def get_category_context(request: Request, category_id: int) -> dict:
 
 def get_product_context(request: Request, product_id: int) -> dict:
     product = serialize_product(product_id)
+    reviews = serialize_reviews(product_id)
 
     category_name = database.query("SELECT name FROM categories WHERE id = ?", (product.category_id,))[0][0]
-    brand_links = database.query("SELECT links FROM brands WHERE id = ?", (product.brand_id,))[0][0]
+    brand_links = database.query("SELECT links FROM brands WHERE id = ?", (str(product.brand_id),))[0][0]
 
     return {
         "request": request,
@@ -56,5 +58,6 @@ def get_product_context(request: Request, product_id: int) -> dict:
         "title": product.name,
         "product": product,
         "category_name": category_name,
-        "brand_links": brand_links
+        "brand_links": brand_links,
+        "reviews": reviews
     }

@@ -11,5 +11,29 @@
     <br>
     {{ product.description }}
     <br>
-    {{ brand_links }}
+    {% if brand_links %}
+        {{ brand_links }}
+    {% else %}
+        Бренд не оставил ссылок
+    {% endif %}
+    <br>
+    {% if reviews %}
+        {% for review in reviews %}
+            Оценка: {{ rating }} - {{ review.posted_on }}
+            <br>
+            {{ review.review }}
+            {% if review.replies %}
+                <br>
+                {% for reply in review.replies %}
+                    Ответ представителя бренда
+                    <br>
+                    {{ reply.reply }}
+                    <br>
+                {% endfor %}
+            {% endif %}
+            <br>
+        {% endfor %}
+    {% else %}
+        Отзывов пока нет
+    {% endif %}
 {% endblock %}

@@ -10,4 +10,7 @@ class Category(BaseModel):
 
 class CategoryUI(Category):
     products_count: PositiveInt
-    link: str
+
+    @property
+    def link(self) -> str:
+        return f"/category/{self.id}"

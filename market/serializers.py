@@ -7,6 +7,8 @@ from common.database import DatabaseSQLite
 from settings import settings
 from .schemas.category import CategoryUI
 from .schemas.product import ProductUI
+from .schemas.review import ReviewUI
+from .schemas.reply import Reply
 
 
 database = DatabaseSQLite(settings.database_path)
@@ -30,6 +32,22 @@ def _get_product_ui_additional(product_id: int, brand_id: int) -> tuple[str, flo
     return brand_name, rating
 
 
+def _get_replies_for_review(review_id: int) -> Optional[list[Reply]]:
+    raw_replies = database.query("SELECT id, reply, posted_on FROM replies WHERE review_id = ?", (review_id,))
+
+    if len(raw_replies) == 0:
+        return
+
+    replies = []
+
+    for reply_id, reply_body, reply_posted_on in raw_replies:
+        replies.append(
+            Reply(id=reply_id, review_id=review_id, reply=reply_body, posted_on=reply_posted_on)
+        )
+
+    return replies
+
+
 def serialize_index() -> Optional[list[CategoryUI]]:
     raw_categories = database.query("SELECT id, name FROM categories")
 
@@ -48,7 +66,7 @@ def serialize_index() -> Optional[list[CategoryUI]]:
 
         categories.append(
             CategoryUI(
-                id=category_id, name=category_name, products_count=products_count, link=f"/category/{category_id}"
+                id=category_id, name=category_name, products_count=products_count
             )
         )
 
@@ -95,3 +113,24 @@ def serialize_product(product_id: int) -> ProductUI:
         id=product_id, category_id=category_id, brand_id=brand_id, name=name, clicks=clicks,
         brand_name=brand_name, rating=rating, description=description, image_url=image_url
     )
+
+
+def serialize_reviews(product_id: int) -> Optional[list[ReviewUI]]:
+    raw_reviews = database.query(
+        "SELECT id, review, rating, posted_on FROM reviews WHERE product_id = ?", (product_id,)
+    )
+
+    if len(raw_reviews) == 0:
+        return
+
+    reviews = []
+
+    for review_id, review, rating, posted_on in raw_reviews:
+        reviews.append(
+            ReviewUI(
+                id=review_id, product_id=product_id, review=review, rating=rating, posted_on=posted_on,
+                replies=_get_replies_for_review(review_id)
+            )
+        )
+
+    return reviews

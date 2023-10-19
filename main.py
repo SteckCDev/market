@@ -3,12 +3,14 @@ from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
-from common.database import DatabaseSQLite
-
 from settings import settings
 from market.on_exception import on_not_found_error, on_internal_error
 from market.schemas.dummy import Dummy
-from market.contexts import get_index_context, get_category_context
+from market.contexts import (
+    get_index_context,
+    get_category_context,
+    get_product_context
+)
 
 
 app: FastAPI = FastAPI(
@@ -23,8 +25,6 @@ app: FastAPI = FastAPI(
 app.mount("/static", StaticFiles(directory=settings.static_folder), name="static")
 
 templates: Jinja2Templates = Jinja2Templates(directory=settings.template_folder)
-
-database: DatabaseSQLite = DatabaseSQLite(settings.database_path)
 
 
 @app.get("/auth")
@@ -47,8 +47,8 @@ def category(request: Request, category_id: int):
 
 
 @app.get("/product/{product_id}")
-def products(product_id: int):
-    return Dummy(page_name="card", data=[product_id])
+def products(request: Request, product_id: int):
+    return templates.TemplateResponse("product.html", context=get_product_context(request, product_id))
 
 
 @app.get("/feedback/{product_id}")
