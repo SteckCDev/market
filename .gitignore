@@ -5,7 +5,6 @@ env/
 .env
 .log
 
-front/
 tmp.py
 notes
 database
