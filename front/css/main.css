@@ -178,6 +178,8 @@ header {
 
 
 
+
+
 /* 
 INDEX
 INDEX
@@ -226,6 +228,8 @@ INDEX
     height: 28px;
     align-self: self-end;
 }
+
+
 
 
 
@@ -296,6 +300,8 @@ CATEGORY
 
 
 
+
+
 /* 
 PRODUCT
 PRODUCT
@@ -303,8 +309,6 @@ PRODUCT
 PRODUCT
 PRODUCT
 */
-
-
 
 .card__wrapper {
     display: flex;
@@ -480,4 +484,69 @@ PRODUCT
     font-size: 14px;
     font-weight: 300;
     line-height: normal;
+}
+
+
+
+
+
+/* 
+FEEDBACK, SERVICE_FEEDBACK
+FEEDBACK, SERVICE_FEEDBACK
+FEEDBACK, SERVICE_FEEDBACK
+FEEDBACK, SERVICE_FEEDBACK
+FEEDBACK, SERVICE_FEEDBACK
+*/
+
+.new-review__form, .new-answer__form {
+    display: flex;
+    flex-direction: column;
+    grid-gap: 20px;
+}
+
+.new-review__body, .new-answer__body {
+    width: 100%;
+    min-height: 84px;
+    border-radius: 12px;
+    padding: 12px;
+    background-color: #1E2332;
+    font-size: 14px;
+    color: white;
+    resize: vertical;
+}
+
+.new-review__rating {
+    display: flex;
+}
+
+.new-review__rating > img {
+    width: 36px;
+    height: 36px;
+    cursor: pointer;
+}
+
+.btn-action {
+    height: 44px;
+    font-size: 18px;
+    font-weight: 400;
+    background-color: #1E60EC;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.small-caption {
+    color: #B3B3B3;
+    font-size: 14px;
+    font-weight: 300;
+    margin-bottom: -12px;
+}
+
+.new-asnwer__service-code {
+    width: 100%;
+    border-radius: 12px;
+    padding: 12px;
+    background-color: #1E2332;
+    font-size: 14px;
+    color: white;
 }
