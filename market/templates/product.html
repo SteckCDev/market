@@ -1,39 +1,139 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <b>{{ category_name }} -> {{ product.id }}</b>
-    <br>
-    {% if product.image_url %} <img src="{{ product.image_url }}" alt="Картинка"> {% else %} Картинки нет {% endif %}
-    <br>
-    <b>{{ product.brand_name }} {{ product.name }}</b>
-    <br>
-    {{ product.clicks }}
-    <br>
-    {{ product.description }}
-    <br>
-    {% if brand_links %}
-        {{ brand_links }}
-    {% else %}
-        Бренд не оставил ссылок
-    {% endif %}
-    <br>
-    {% if reviews %}
-        {% for review in reviews %}
-            Оценка: {{ rating }} - {{ review.posted_on }}
-            <br>
-            {{ review.review }}
-            {% if review.replies %}
-                <br>
-                {% for reply in review.replies %}
-                    Ответ представителя бренда
-                    <br>
-                    {{ reply.reply }}
-                    <br>
-                {% endfor %}
-            {% endif %}
-            <br>
-        {% endfor %}
-    {% else %}
-        Отзывов пока нет
-    {% endif %}
+{#    <b>{{ category_name }} -> {{ product.id }}</b>#}
+{#    <br>#}
+{#    {% if product.image_url %} <img src="{{ product.image_url }}" alt="Картинка"> {% else %} Картинки нет {% endif %}#}
+{#    <br>#}
+{#    <b>{{ product.brand_name }} {{ product.name }}</b>#}
+{#    <br>#}
+{#    {{ product.clicks }}#}
+{#    <br>#}
+{#    {{ product.description }}#}
+{#    <br>#}
+{#    {% if brand_links %}#}
+{#        {{ brand_links }}#}
+{#    {% else %}#}
+{#        Бренд не оставил ссылок#}
+{#    {% endif %}#}
+{#    <br>#}
+{#    {% if reviews %}#}
+{#        {% for review in reviews %}#}
+{#            Оценка: {{ rating }} - {{ review.posted_on }}#}
+{#            <br>#}
+{#            {{ review.review }}#}
+{#            {% if review.replies %}#}
+{#                <br>#}
+{#                {% for reply in review.replies %}#}
+{#                    Ответ представителя бренда#}
+{#                    <br>#}
+{#                    {{ reply.reply }}#}
+{#                    <br>#}
+{#                {% endfor %}#}
+{#            {% endif %}#}
+{#            <br>#}
+{#        {% endfor %}#}
+{#    {% else %}#}
+{#        Отзывов пока нет#}
+{#    {% endif %}#}
+    
+    <div class="card">
+        <div class="card__wrapper">
+            <div class="card__image-container">
+                <img src="{{ product.image_url }}" alt="Товар {{ product.id }}" class="card__image-self">
+            </div>
+            <div class="card__info">
+                <div class="card__name">{{ product.brand_name }} {{ product.name }}</div>
+                <div class="card__clicks">{{ product.clicks }} переходов</div>
+                <div class="card__description-container">
+                    <div class="card__caption">О товаре</div>
+                    <div class="card__description-self">
+                        {{ product.description }}
+                    </div>
+                </div>
+                <div class="card__links-container">
+                    <div class="card__caption">Ссылки бренда</div>
+                    <div class="card__links-self">
+                        {% if brand_links %}
+                            {% for link, caption in brand_links %}
+                                <a href="{{ link }}">{{ caption }}</a>
+                            {% endfor %}
+                        {% else %}
+                            Бренд не оставил ссылок
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="card__reviews">
+                    <div class="card__reviews-wrapper">
+                        <div class="card__reviews-header">
+                            <div class="card__reviews-caption card__caption">
+                                Отзывы
+                                <div class="card__reviews-stats">
+                                    <a href="/product/{{ product.id }}/feedback">написать отзыв</a>
+                                    {% if reviews %}
+                                        <div class="card__reviews-rating">
+                                            <span>{{ product.rating }}</span>
+                                            {% for i in range(1, 6) %}
+                                                {% if i <= product.rating %}
+                                                    <img src="/static/img/star.svg" alt="">
+                                                {% else %}
+                                                    <img src="/static/img/star_unfilled.svg" alt="">
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                        <div class="card__reviews-count">{{ reviews_count }} отзывов</div>
+                                    {% else %}
+                                        <span>отзывов пока нет</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card__reviews-self">
+                            {% if reviews %}
+                                {% for review in reviews %}
+                                    <div class="card__reviews-review">
+                                        <div class="card__reviews-review-header">
+                                            <div class="card__reviews-review-info">
+                                                <div class="rating">
+                                                    {% for i in range(1, 6) %}
+                                                        {% if i <= review.rating %}
+                                                            <img src="/static/img/star.svg" alt="">
+                                                        {% else %}
+                                                            <img src="/static/img/star_unfilled.svg" alt="">
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </div>
+                                                •
+                                                <span>{{ review.posted_on }}</span>
+                                            </div>
+                                            <div class="card__reviews-review-actions">
+                                                <a href="/product/{{ product.id }}/feedback/{{ review.id }}/reply">
+                                                    <img src="/static/img/actions.svg" alt="ответить">
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="card__review-self">
+                                            {{ review.review }}
+                                        </div>
+                                        {% if review.replies %}
+                                            {% for reply in review.replies %}
+                                                <div class="card__review-answer">
+                                                    <div class="card__review-answer-caption">
+                                                        Ответ представителя бренда
+                                                    </div>
+                                                    <div class="card__review-answer-self">
+                                                        {{ reply.reply }}
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

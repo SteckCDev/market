@@ -2,13 +2,21 @@
 
 {% block content %}
     {% if categories %}
-        {% for category in categories %}
-            <div class="object">
-                <a href="{{ category.link }}">({{ category.id }}) {{ category.name }}</a>
-                <br>
-                Товаров: {{ category.products_count }}
-            </div>
-        {% endfor %}
+        <div class="categories">
+            {% for category in categories %}
+                <div class="category">
+                    <div class="category__wrapper">
+                        <div class="category__info">
+                            <div class="category__name">{{ category.name }}</div>
+                            <div class="category__items-count">{{ category.products_count }} товаров</div>
+                        </div>
+                        <a href="{{ category.link }}" class="category__view-icon">
+                            <img src="/static/img/arrow.svg" alt="Посмотреть">
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
     {% else %}
         Каталог пуст
     {% endif %}

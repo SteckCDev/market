@@ -2,17 +2,31 @@
 
 {% block content %}
     {% if products %}
-        {% for product in products %}
-            <div class="object">
-                {% if product.image_url %} <img src="{{ product.image_url }}" alt="Картинка"> {% else %} Картинки нет {% endif %}
-                <a href="{{ product.link }}">
-                    ({{ product.category_id }} / {{ product.id }}) <b>({{ product.brand_id }}) {{ product.brand_name }}</b> {{ product.name }}
-                </a>
-                <br>
-                Переходов: {{ product.clicks }}
-                Рейтинг: {% if product.rating %} {{ product.rating }} {% else %} Оценок нет {% endif %}
-            </div>
-        {% endfor %}
+        <div class="products">
+            {% for product in products %}
+                <div class="product">
+                    <div class="product__wrapper">
+                        <div class="product__preview-container">
+                            <img src="{{ product.image_url }}" alt="Товар {{ product.id }}" class="product__preview-image">
+                        </div>
+                        <a href="{{ product.link }}">
+                            <div class="product__name">{{ product.brand_name }} {{ product.name }}</div>
+                            <div class="product__info">
+                                <div class="product__clicks">{{ product.clicks }} переходов</div>
+                                <div class="product__rating">
+                                    {% if product.rating %}
+                                        {{ product.rating }}
+                                        <img src="/static/img/star.svg" alt="">
+                                    {% else %}
+                                        оценок нет
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
     {% else %}
         Запрашиваемой категории не существует, либо в ней нет товаров
     {% endif %}

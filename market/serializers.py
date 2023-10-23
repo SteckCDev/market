@@ -3,12 +3,11 @@ from typing import Optional
 from fastapi.exceptions import HTTPException
 
 from common.database import DatabaseSQLite
-
 from settings import settings
 from .schemas.category import CategoryUI
 from .schemas.product import ProductUI
-from .schemas.review import ReviewUI
 from .schemas.reply import Reply
+from .schemas.review import ReviewUI
 
 
 database = DatabaseSQLite(settings.database_path)
@@ -75,7 +74,7 @@ def serialize_index() -> Optional[list[CategoryUI]]:
 
 def serialize_category(category_id: int) -> Optional[list[ProductUI]]:
     raw_products = database.query(
-        "SELECT id, brand_id, name, clicks FROM products WHERE category_id = ?", (category_id,)
+        "SELECT id, brand_id, name, image_url, clicks FROM products WHERE category_id = ?", (category_id,)
     )
 
     if len(raw_products) == 0:
@@ -83,13 +82,13 @@ def serialize_category(category_id: int) -> Optional[list[ProductUI]]:
 
     products = []
 
-    for product_id, brand_id, product_name, product_clicks in raw_products:
+    for product_id, brand_id, product_name, image_url, product_clicks in raw_products:
         brand_name, rating = _get_product_ui_additional(product_id, brand_id)
 
         products.append(
             ProductUI(
-                id=product_id, category_id=category_id, brand_id=brand_id, name=product_name, clicks=product_clicks,
-                brand_name=brand_name, rating=rating
+                id=product_id, category_id=category_id, brand_id=brand_id, name=product_name, image_url=image_url,
+                clicks=product_clicks, brand_name=brand_name, rating=rating
             )
         )
 
@@ -134,3 +133,14 @@ def serialize_reviews(product_id: int) -> Optional[list[ReviewUI]]:
         )
 
     return reviews
+
+
+def serialize_review(review_id: int) -> Optional[ReviewUI]:
+    raw_review = database.query("SELECT product_id, review, rating, posted_on FROM reviews WHERE id = ?", (review_id,))
+
+    if len(raw_review) == 0:
+        return
+
+    product_id, review, rating, posted_on = raw_review[0]
+
+    return ReviewUI(id=review_id, product_id=product_id, review=review, rating=rating, posted_on=posted_on)

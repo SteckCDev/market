@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="new-review">
+        <form method="POST" action="{{ request.url.path }}" class="new-review__form">
+            <textarea name="review_body" class="new-review__body" contentEditable></textarea>
+            <input type="hidden" name="review_rating" value="0" id="reviewRatingHidden">
+            <div class="new-review__rating">
+                <img src="/static/img/star_unfilled.svg" alt="" id="reviewRating1" onclick="setRating(1)">
+                <img src="/static/img/star_unfilled.svg" alt="" id="reviewRating2" onclick="setRating(2)">
+                <img src="/static/img/star_unfilled.svg" alt="" id="reviewRating3" onclick="setRating(3)">
+                <img src="/static/img/star_unfilled.svg" alt="" id="reviewRating4" onclick="setRating(4)">
+                <img src="/static/img/star_unfilled.svg" alt="" id="reviewRating5" onclick="setRating(5)">
+            </div>
+            <div class="g-recaptcha" data-sitekey="6LcNaLYoAAAAADGjFA0WNmUl0WZiCMiSXWhmamcQ"></div>
+            <input type="submit" name="review_send" value="Оставить отзыв" class="btn-action">
+        </form>
+    </div>
+{% endblock %}

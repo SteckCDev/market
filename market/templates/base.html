@@ -2,17 +2,60 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ title or project_name }}</title>
-    <link rel="stylesheet" href="../static/css/blank.css">
-    <link rel="stylesheet" href="../static/css/main.css">
+    <link rel="stylesheet" href="/static/css/blank.css">
+    <link rel="stylesheet" href="/static/css/main.css">
+    <link rel="shortcut icon" href="/static/img/logo.svg" type="image/x-icon">
+    <script src="/static/js/main.js"></script>
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 <body>
-    <main>
-        <div class="content">
-            {% block content %}
-            {% endblock %}
+    <div class="container">
+        <div class="container__wrapper">
+            <header>
+                <div class="burger header__weight">
+                    <input id="menu__toggle" type="checkbox" />
+                    <label class="menu__btn" for="menu__toggle">
+                        <span></span>
+                    </label>
+                    <ul class="menu__box">
+                        <li><a class="menu__item" href="#">Правила</a></li>
+                        <li><a class="menu__item" href="#">Новости</a></li>
+                        <li><a class="menu__item" href="#">Предложить</a></li>
+                        <li><a class="menu__item" href="#">Статистика</a></li>
+                        <li><a class="menu__item" href="#">Наш чат</a></li>
+                        <li><a class="menu__item" href="#">Мы здесь!</a></li>
+                    </ul>
+                </div>
+                <a href="/" class="logotype">
+                    <img src="/static/img/logo.svg" alt="Лого">
+                    <span>Market</span>
+                </a>
+                <div class="header__weight"></div>
+            </header>
+            <div class="ads-separated">
+                <a href="#">
+                    <div class="ads-separated__block"></div>
+                </a>
+                <a href="#">
+                    <div class="ads-separated__block"></div>
+                </a>
+            </div>
+            <!--
+            <div class="ads-single">
+                <a href="#">
+                    <div class="ads-single__block"></div>
+                </a>
+            </div>
+            -->
+            <main>
+                <div class="main__caption">{{ main_caption }}</div>
+                {% block content %}
+
+                {% endblock %}
+            </main>
         </div>
-    </main>
+    </div>
 </body>
 </html>

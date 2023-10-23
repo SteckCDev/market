@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="new-answer">
+        <form method="POST" action="{{ request.url.path }}" class="new-answer__form">
+            <div class="card__reviews-review">
+                <div class="card__reviews-review-header">
+                    <div class="card__reviews-review-info">
+                        <div class="rating">
+                            {% for i in range(1, 6) %}
+                                {% if i <= review.rating %}
+                                    <img src="/static/img/star.svg" alt="">
+                                {% else %}
+                                    <img src="/static/img/star_unfilled.svg" alt="">
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        <span>• {{ review.posted_on }}</span>
+                    </div>
+                </div>
+                <div class="card__review-self">
+                    {{ review.review }}
+                </div>
+            </div>
+            <span class="small-caption">Ответ на отзыв</span>
+            <textarea name="reply_body" class="new-answer__body" contentEditable></textarea>
+            <span class="small-caption">Код сервиса</span>
+            <input type="text" name="reply_service_code" class="new-answer__service-code">
+            <div class="g-recaptcha" data-sitekey="6LcNaLYoAAAAADGjFA0WNmUl0WZiCMiSXWhmamcQ"></div>
+            <input type="submit" name="answer_send" value="Оставить отзыв" class="btn-action">
+        </form>
+        <div>
+            {% if errors %}
+                {% for error in errors %}
+                    <span>{{ error }}</span>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
