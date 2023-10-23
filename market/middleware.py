@@ -3,7 +3,7 @@ from fastapi.responses import RedirectResponse
 from starlette.middleware.base import BaseHTTPMiddleware
 
 
-class RedirectToReauth(BaseHTTPMiddleware):
+class RedirectToReauthMiddleware(BaseHTTPMiddleware):
     def __init__(self, app, reauth_path: str):
         super().__init__(app)
         self.reauth_path = reauth_path

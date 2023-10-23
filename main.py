@@ -18,7 +18,7 @@ from market.contexts import (
     get_category_context,
     get_product_context
 )
-from market.middleware import RedirectToReauth
+from market.middleware import RedirectToReauthMiddleware
 
 
 app: FastAPI = FastAPI(
@@ -32,7 +32,7 @@ app: FastAPI = FastAPI(
     }
 )
 
-app.add_middleware(RedirectToReauth, reauth_path="/reauth")
+app.add_middleware(RedirectToReauthMiddleware, reauth_path=settings.reauth_path)
 app.add_middleware(SessionMiddleware, secret_key=settings.secret_key, max_age=1800)
 
 app.mount("/static", StaticFiles(directory=settings.static_folder), name="static")

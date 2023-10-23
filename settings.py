@@ -23,5 +23,7 @@ class Settings(BaseSettings):
     template_folder: str
     static_folder: str
 
+    reauth_path: str
+
 
 settings = Settings()
