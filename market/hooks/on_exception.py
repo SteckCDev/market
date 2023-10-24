@@ -21,6 +21,8 @@ def on_not_found_error(request: Request, exc: HTTPException):
 def on_validation_error(request: Request, exc: HTTPException):
     error = "422: мы вас не поняли"
 
+    print(error)
+
     return templates.TemplateResponse(
         "error.html", context=get_error_context(request, error), status_code=status.HTTP_422_UNPROCESSABLE_ENTITY
     )

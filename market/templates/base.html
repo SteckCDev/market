@@ -51,6 +51,13 @@
             -->
             <main>
                 <div class="main__caption">{{ main_caption }}</div>
+                <div>
+                    {% if errors %}
+                        {% for error in errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    {% endif %}
+                </div>
                 {% block content %}
 
                 {% endblock %}

@@ -26,5 +26,8 @@ class Settings(BaseSettings):
 
     reauth_path: str
 
+    recaptcha_site_key: str
+    recaptcha_secret_key: str
+
 
 settings = Settings()

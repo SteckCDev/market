@@ -1,6 +1,6 @@
 function setRating(stars) {
-    const filled_star_path = "../static/img/star.svg"
-    const unfilled_star_path = "../static/img/star_unfilled.svg"
+    const filled_star_path = "/static/img/star.svg"
+    const unfilled_star_path = "/static/img/star_unfilled.svg"
 
     let actual_input = document.getElementById("reviewRatingHidden");
     actual_input.value = stars;

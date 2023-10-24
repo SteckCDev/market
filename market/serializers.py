@@ -1,6 +1,7 @@
 from typing import Optional
 
 from fastapi.exceptions import HTTPException
+from starlette import status
 
 from common.database import DatabaseSQLite
 from settings import settings
@@ -47,7 +48,7 @@ def _get_replies_for_review(review_id: int) -> Optional[list[Reply]]:
     return replies
 
 
-def serialize_index() -> Optional[list[CategoryUI]]:
+def serialize_categories() -> Optional[list[CategoryUI]]:
     raw_categories = database.query("SELECT id, name FROM categories")
 
     if len(raw_categories) == 0:
@@ -72,7 +73,7 @@ def serialize_index() -> Optional[list[CategoryUI]]:
     return categories
 
 
-def serialize_category(category_id: int) -> Optional[list[ProductUI]]:
+def serialize_products(category_id: int) -> Optional[list[ProductUI]]:
     raw_products = database.query(
         "SELECT id, brand_id, name, image_url, clicks FROM products WHERE category_id = ?", (category_id,)
     )
@@ -95,14 +96,17 @@ def serialize_category(category_id: int) -> Optional[list[ProductUI]]:
     return products
 
 
-def serialize_product(product_id: int) -> ProductUI:
+def serialize_single_product(product_id: int) -> ProductUI:
     raw_product = database.query(
         "SELECT id, category_id, brand_id, name, description, image_url, clicks FROM products WHERE id = ?",
         (product_id,)
     )
 
     if len(raw_product) == 0:
-        raise HTTPException(status_code=404, detail=f"Requested product with id {product_id} that doesn't exist")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Requested product with id {product_id} that doesn't exist"
+        )
 
     product_id, category_id, brand_id, name, description, image_url, clicks = raw_product[0]
 
@@ -135,11 +139,14 @@ def serialize_reviews(product_id: int) -> Optional[list[ReviewUI]]:
     return reviews
 
 
-def serialize_review(review_id: int) -> Optional[ReviewUI]:
+def serialize_single_review(review_id: int) -> ReviewUI:
     raw_review = database.query("SELECT product_id, review, rating, posted_on FROM reviews WHERE id = ?", (review_id,))
 
     if len(raw_review) == 0:
-        return
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Requested review with id {review_id} that doesn't exist"
+        )
 
     product_id, review, rating, posted_on = raw_review[0]
 

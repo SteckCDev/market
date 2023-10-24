@@ -23,18 +23,11 @@
                 </div>
             </div>
             <span class="small-caption">Ответ на отзыв</span>
-            <textarea name="reply_body" class="new-answer__body" contentEditable></textarea>
+            <textarea name="reply_body" class="new-answer__body" required></textarea>
             <span class="small-caption">Код сервиса</span>
             <input type="text" name="reply_service_code" class="new-answer__service-code">
-            <div class="g-recaptcha" data-sitekey="6LcNaLYoAAAAADGjFA0WNmUl0WZiCMiSXWhmamcQ"></div>
+            <div class="g-recaptcha" data-sitekey="{{ recaptcha_site_key }}"></div>
             <input type="submit" name="answer_send" value="Оставить отзыв" class="btn-action">
         </form>
-        <div>
-            {% if errors %}
-                {% for error in errors %}
-                    <span>{{ error }}</span>
-                {% endfor %}
-            {% endif %}
-        </div>
     </div>
 {% endblock %}
