@@ -111,3 +111,19 @@ def get_service_feedback_context(request: Request, review_id: int, errors: list[
         "review": review,
         "errors": errors
     }
+
+
+def get_admin_context(request: Request) -> dict[str, Any]:
+    ads_pages = {
+        1: "Страница входа",
+        2: "Страница всех категорий",
+        3: "Страница категории",
+        4: "Страница товара",
+        5: "Страница \"Оставить отзыв\"",
+        6: "Страница \"Ответить на отзыв\""
+    }
+
+    return {
+        "request": request,
+        "ads_pages": ads_pages
+    }

@@ -1,6 +1,7 @@
 from uuid import UUID
 
-from fastapi import FastAPI, Request, Form
+from fastapi import FastAPI, Request, Form, File, UploadFile
+from fastapi.exceptions import RequestValidationError
 from fastapi.responses import Response, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -13,7 +14,8 @@ from market.contexts import (
     get_category_context,
     get_product_context,
     get_feedback_context,
-    get_service_feedback_context
+    get_service_feedback_context,
+    get_admin_context
 )
 from market.hooks.on_exception import (
     on_not_found_error,
@@ -25,6 +27,7 @@ from market.recaptcha_v2 import verify_recaptcha
 from market.services.reauth import Reauth
 from market.services.reply import Reply
 from market.services.review import Review
+from market.services.ads import Ads
 from settings import settings
 
 
@@ -32,10 +35,13 @@ app: FastAPI = FastAPI(
     title="Market Application",
     description="On-line catalog",
     exception_handlers={
-        404: on_not_found_error,
-        422: on_validation_error,
-        500: on_internal_error
-    }
+        status.HTTP_404_NOT_FOUND: on_not_found_error,
+        RequestValidationError: on_validation_error,
+        status.HTTP_500_INTERNAL_SERVER_ERROR: on_internal_error
+    },
+    openapi_url=None,
+    docs_url=None,
+    redoc_url=None
 )
 
 app.add_middleware(RedirectToReauthMiddleware, reauth_path=settings.reauth_path)
@@ -50,12 +56,12 @@ templates.env.globals["project_name"] = settings.project_name
 
 
 @app.get("/reauth")
-def reauth(request: Request, redirect_to: str | None = None):
+async def reauth(request: Request, redirect_to: str | None = None):
     return templates.TemplateResponse("reauth.html", context=get_reauth_context(request, redirect_to))
 
 
 @app.post("/reauth")
-def reauth(
+async def reauth(
         request: Request,
         redirect_to: str = Form("/"),
         recaptcha_response: str = Form(..., alias="g-recaptcha-response")
@@ -73,27 +79,27 @@ def reauth(
 
 
 @app.get("/")
-def index(request: Request) -> Response:
+async def index(request: Request) -> Response:
     return templates.TemplateResponse("index.html", context=get_index_context(request))
 
 
 @app.get("/category/{category_id}")
-def category(request: Request, category_id: int):
+async def category(request: Request, category_id: int):
     return templates.TemplateResponse("category.html", context=get_category_context(request, category_id))
 
 
 @app.get("/product/{product_id}")
-def products(request: Request, product_id: int):
+async def products(request: Request, product_id: int):
     return templates.TemplateResponse("product.html", context=get_product_context(request, product_id))
 
 
 @app.get("/product/{product_id}/feedback")
-def feedback(request: Request, product_id: int):
+async def feedback(request: Request, product_id: int):
     return templates.TemplateResponse("feedback.html", context=get_feedback_context(request, product_id))
 
 
 @app.post("/product/{product_id}/feedback")
-def feedback(
+async def feedback(
         request: Request,
         product_id: int,
         review_body: str | None = Form(..., min_length=4, max_length=1024),
@@ -113,12 +119,12 @@ def feedback(
 
 
 @app.get("/product/{product_id}/feedback/{review_id}/reply/")
-def feedback_reply(request: Request, review_id: int):
+async def feedback_reply(request: Request, review_id: int):
     return templates.TemplateResponse("service_feedback.html", context=get_service_feedback_context(request, review_id))
 
 
 @app.post("/product/{product_id}/feedback/{review_id}/reply/")
-def feedback_reply(
+async def feedback_reply(
         request: Request,
         product_id: int,
         review_id: int,
@@ -143,3 +149,23 @@ def feedback_reply(
     Reply.create(review_id, reply_body)
 
     return RedirectResponse(f"/product/{product_id}", status_code=status.HTTP_302_FOUND)
+
+
+@app.get("/admin")
+async def admin(request: Request):
+    return templates.TemplateResponse("admin.html", context=get_admin_context(request))
+
+
+@app.post("/admin")
+async def admin(
+        request: Request,
+        ads_page_id: int = Form(...),
+        ads_split: bool = Form(False),
+        ads_link1: str | None = Form(None),
+        ads_image1: UploadFile = File(...),
+        ads_link2: str | None = Form(None),
+        ads_image2: UploadFile = File(...)
+):
+    await Ads.update(ads_page_id, ads_split, ads_link1, ads_image1, ads_link2, ads_image2)
+
+    return templates.TemplateResponse("admin.html", context=get_admin_context(request))

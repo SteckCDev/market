@@ -5,6 +5,9 @@ env/
 .env
 .log
 
-tmp.py
+ads/
+products/
+
 notes
+tmp.py
 database

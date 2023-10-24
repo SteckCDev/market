@@ -111,7 +111,7 @@ header {
     padding: 80px 0;
     list-style: none;
     background-color: #1E2332;
-    box-shadow: 1px 0px 6px rgba(0, 0, 0, .2);
+    box-shadow: 1px 0 6px rgba(0, 0, 0, .2);
     transition-duration: .25s;
 }
 
@@ -542,6 +542,16 @@ FEEDBACK, SERVICE_FEEDBACK
     cursor: pointer;
 }
 
+.btn-action-small {
+    height: 32px;
+    font-size: 14px;
+    font-weight: 400;
+    background-color: #1E60EC;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
 .small-caption {
     color: #B3B3B3;
     font-size: 14px;
@@ -557,3 +567,70 @@ FEEDBACK, SERVICE_FEEDBACK
     font-size: 14px;
     color: white;
 }
+
+
+
+
+
+/*
+CATEGORY
+CATEGORY
+CATEGORY
+CATEGORY
+CATEGORY
+*/
+
+.admin {
+    display: flex;
+    flex-direction: column;
+    grid-gap: 32px;
+    font-size: 14px;
+}
+
+.admin__caption {
+    font-size: 18px;
+    margin-bottom: 14px;
+    color: #B3B3B3;
+}
+
+.admin__caption-small {
+    margin-bottom: 14px;
+    color: #B3B3B3;
+}
+
+.admin__tables, .admin__ads, .admin__links {
+    display: flex;
+    flex-direction: column;
+}
+
+.admin__tables {
+    display: flex;
+    grid-gap: 8px;
+    padding: 18px;
+    background-color: #1E2332;
+    border-radius: 12px;
+}
+
+.admin__ads {
+    display: flex;
+    grid-gap: 8px;
+    padding: 18px;
+    background-color: #1E2332;
+    border-radius: 12px;
+}
+
+.admin__ads-page {
+    display: flex;
+    flex-direction: column;
+    padding: 24px;
+    background-color: #2E354C;
+    border-radius: 12px;
+}
+
+.admin__ads-page > form {
+    display: flex;
+    flex-direction: column;
+    grid-gap: 14px;
+}
+
+

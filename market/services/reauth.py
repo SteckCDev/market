@@ -1,18 +1,19 @@
 from fastapi import Request
 
 
-class Reauth:
-    SESSION_KEY: str = "reauthenticated"
-    AUTHENTICATED: bool = True
+SESSION_KEY: str = "authenticated"
+AUTHENTICATED: bool = True
 
+
+class Reauth:
     @staticmethod
     def authenticate(request: Request) -> None:
-        request.session[Reauth.SESSION_KEY] = Reauth.AUTHENTICATED
+        request.session[SESSION_KEY] = AUTHENTICATED
 
     @staticmethod
     def is_authenticated(request: Request) -> bool:
-        return request.session.get(Reauth.SESSION_KEY, False)
+        return request.session.get(SESSION_KEY, False)
 
     @staticmethod
     def deauthenticate(request: Request) -> None:
-        request.session.pop(Reauth.SESSION_KEY)
+        request.session.pop(SESSION_KEY)

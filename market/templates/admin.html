@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="admin">
+        <div class="admin__tables">
+            <span class="admin__caption">Менеджмент базы данных</span>
+            <a href="/admin/brands" class="admin__tables-table">Бренды</a>
+            <a href="/admin/categories" class="admin__tables-table">Категории</a>
+            <a href="/admin/products" class="admin__tables-table">Товары</a>
+            <a href="/admin/reviews" class="admin__tables-table">Отзывы</a>
+            <a href="/admin/replies" class="admin__tables-table">Ответы</a>
+        </div>
+        <div class="admin__ads">
+            <span class="admin__caption">Реклама на страницах</span>
+            {% for page_id, page_name in ads_pages.items() %}
+                <div class="admin__ads-page">
+                    <span class="admin__caption-small">{{ page_name }}</span>
+                    <form method="POST" action="{{ request.url.path }}" enctype="multipart/form-data">
+                        <input type="hidden" name="ads_page_id" value="{{ page_id }}">
+                        <label>
+                            <input type="checkbox" name="ads_split">
+                            Разделить на 2 блока
+                        </label>
+                        <label>
+                            Ссылка первого блока:
+                            <input type="url" name="ads_link1">
+                        </label>
+                        <label>
+                            Первый блок (к отображению, если блок один)
+                            <input type="file" name="ads_image1">
+                        </label>
+                        <label>
+                            Ссылка второго блока:
+                            <input type="url" name="ads_link2">
+                        </label>
+                        <label>
+                            Второй блок
+                            <input type="file" name="ads_image2">
+                        </label>
+                        <input type="submit" name="submit" value="Обновить" class="btn-action-small">
+                    </form>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="admin__links">
+            <span class="admin__caption">Ссылки бокового меню</span>
+        </div>
+    </div>
+{% endblock %}
