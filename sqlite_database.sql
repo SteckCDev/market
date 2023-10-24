@@ -1,5 +1,5 @@
 --
--- Файл сгенерирован с помощью SQLiteStudio v3.4.4 в Чт окт 19 21:40:35 2023
+-- Файл сгенерирован с помощью SQLiteStudio v3.4.4 в Ср окт 25 01:18:57 2023
 --
 -- Использованная кодировка текста: System
 --
@@ -8,7 +8,7 @@ BEGIN TRANSACTION;
 
 -- Таблица: ads
 DROP TABLE IF EXISTS ads;
-CREATE TABLE ads (page_uri TEXT PRIMARY KEY UNIQUE NOT NULL, split INTEGER NOT NULL DEFAULT (0), image1_url TEXT NOT NULL, image2_url TEXT);
+CREATE TABLE ads (page_id INTEGER PRIMARY KEY UNIQUE NOT NULL, split INTEGER NOT NULL DEFAULT (0), link1 TEXT, image1_path TEXT, link2 TEXT, image2_path TEXT, enabled INTEGER NOT NULL DEFAULT (1));
 
 -- Таблица: brands
 DROP TABLE IF EXISTS brands;
