@@ -5,7 +5,7 @@ env/
 .env
 .log
 
-ads/*
+commercials/*
 products/*
 
 notes

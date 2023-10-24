@@ -34,21 +34,30 @@
                 </a>
                 <div class="header__weight"></div>
             </header>
-            <div class="ads-separated">
-                <a href="#">
-                    <div class="ads-separated__block"></div>
-                </a>
-                <a href="#">
-                    <div class="ads-separated__block"></div>
-                </a>
-            </div>
-            <!--
-            <div class="ads-single">
-                <a href="#">
-                    <div class="ads-single__block"></div>
-                </a>
-            </div>
-            -->
+            {% if ads and ads.enabled %}
+                {% if ads.split %}
+                    <div class="ads-separated">
+                        <a href="{{ ads.link1 }}">
+                            <div class="ads-separated__block">
+                                <img src="{{ ads.image1_path }}" alt="Реклама">
+                            </div>
+                        </a>
+                        <a href="{{ ads.link2 }}">
+                            <div class="ads-separated__block">
+                                <img src="{{ ads.image2_path }}" alt="Реклама">
+                            </div>
+                        </a>
+                    </div>
+                {% else %}
+                    <div class="ads-single">
+                        <a href="{{ ads.link1 }}">
+                            <div class="ads-single__block">
+                                <img src="{{ ads.image1_path }}" alt="Реклама">
+                            </div>
+                        </a>
+                    </div>
+                {% endif %}
+            {% endif %}
             <main>
                 <div class="main__caption">{{ main_caption }}</div>
                 <div>

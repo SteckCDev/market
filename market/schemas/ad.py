@@ -2,7 +2,14 @@ from pydantic import BaseModel
 
 
 class Ad(BaseModel):
-    page_uri: str
+    page_id: int
     split: bool
-    image1_url: str
-    image2_url: str
+    link1: str | None
+    image1_path: str | None
+    link2: str | None
+    image2_path: str | None
+    enabled: bool
+
+
+class AdUI(Ad):
+    name: str

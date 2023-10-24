@@ -12,18 +12,18 @@
         </div>
         <div class="admin__ads">
             <span class="admin__caption">Реклама на страницах</span>
-            {% for page_id, page_name in ads_pages.items() %}
+            {% for ad in ads_for_admin %}
                 <div class="admin__ads-page">
-                    <span class="admin__caption-small">{{ page_name }}</span>
+                    <span class="admin__caption-small">{{ ad.name }}</span>
                     <form method="POST" action="{{ request.url.path }}" enctype="multipart/form-data">
-                        <input type="hidden" name="ads_page_id" value="{{ page_id }}">
+                        <input type="hidden" name="ads_page_id" value="{{ ad.page_id }}">
                         <label>
-                            <input type="checkbox" name="ads_split">
+                            <input type="checkbox" name="ads_split" {% if ad.split %} checked {% endif %}>
                             Разделить на 2 блока
                         </label>
                         <label>
                             Ссылка первого блока:
-                            <input type="url" name="ads_link1">
+                            <input type="url" name="ads_link1" value="{% if ad.link1 %} {{ ad.link1 }} {% endif %}">
                         </label>
                         <label>
                             Первый блок (к отображению, если блок один)
@@ -31,19 +31,25 @@
                         </label>
                         <label>
                             Ссылка второго блока:
-                            <input type="url" name="ads_link2">
+                            <input type="url" name="ads_link2" value="{% if ad.link2 %} {{ ad.link2 }} {% endif %}">
                         </label>
                         <label>
                             Второй блок
                             <input type="file" name="ads_image2">
+                        </label>
+                        <label>
+                            <input type="checkbox" name="ads_enabled" {% if ad.enabled %} checked {% endif %}>
+                            Включить
                         </label>
                         <input type="submit" name="submit" value="Обновить" class="btn-action-small">
                     </form>
                 </div>
             {% endfor %}
         </div>
+        {#
         <div class="admin__links">
             <span class="admin__caption">Ссылки бокового меню</span>
         </div>
+        #}
     </div>
 {% endblock %}

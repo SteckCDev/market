@@ -9,7 +9,9 @@ from .serializers import (
     serialize_products,
     serialize_single_product,
     serialize_reviews,
-    serialize_single_review
+    serialize_single_review,
+    serialize_ads_for_page,
+    serialize_ads_for_admin
 )
 
 
@@ -25,6 +27,8 @@ def get_error_context(request: Request, error: str) -> dict[str, Any]:
 
 
 def get_reauth_context(request: Request, redirect_to: str | None, errors: list[str] | None = None) -> dict[str, Any]:
+    page_id = 1
+
     return {
         "request": request,
         "title": "Продолжить в каталог",
@@ -35,15 +39,20 @@ def get_reauth_context(request: Request, redirect_to: str | None, errors: list[s
 
 
 def get_index_context(request: Request) -> dict[str, Any]:
+    page_id = 2
+
     return {
         "request": request,
         "main_caption": "Категории товаров",
         "title": "Каталог",
-        "categories": serialize_categories()
+        "categories": serialize_categories(),
+        "ads": serialize_ads_for_page(page_id)
     }
 
 
 def get_category_context(request: Request, category_id: int) -> dict[str, Any]:
+    page_id = 3
+
     raw_category_name = database.query("SELECT name FROM categories WHERE id = ?", (category_id,))
 
     category_name = None if len(raw_category_name) == 0 else raw_category_name[0][0]
@@ -59,6 +68,8 @@ def get_category_context(request: Request, category_id: int) -> dict[str, Any]:
 
 
 def get_product_context(request: Request, product_id: int) -> dict[str, Any]:
+    page_id = 4
+
     product = serialize_single_product(product_id)
     reviews = serialize_reviews(product_id)
 
@@ -83,6 +94,8 @@ def get_product_context(request: Request, product_id: int) -> dict[str, Any]:
 
 
 def get_feedback_context(request: Request, product_id: int, errors: list[str] | None = None) -> dict[str, Any]:
+    page_id = 5
+
     product = serialize_single_product(product_id)
 
     category_name = database.query("SELECT name FROM categories WHERE id = ?", (product.category_id,))[0][0]
@@ -97,6 +110,8 @@ def get_feedback_context(request: Request, product_id: int, errors: list[str] | 
 
 
 def get_service_feedback_context(request: Request, review_id: int, errors: list[str] | None = None) -> dict[str, Any]:
+    page_id = 6
+
     review = serialize_single_review(review_id)
 
     category_name = database.query(
@@ -125,5 +140,5 @@ def get_admin_context(request: Request) -> dict[str, Any]:
 
     return {
         "request": request,
-        "ads_pages": ads_pages
+        "ads_for_admin": serialize_ads_for_admin(ads_pages)
     }

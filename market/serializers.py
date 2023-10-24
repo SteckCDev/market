@@ -5,10 +5,12 @@ from starlette import status
 
 from common.database import DatabaseSQLite
 from settings import settings
+from .services.ads import Ads
 from .schemas.category import CategoryUI
 from .schemas.product import ProductUI
 from .schemas.reply import Reply
 from .schemas.review import ReviewUI
+from .schemas.ad import Ad, AdUI
 
 
 database = DatabaseSQLite(settings.database_path)
@@ -151,3 +153,16 @@ def serialize_single_review(review_id: int) -> ReviewUI:
     product_id, review, rating, posted_on = raw_review[0]
 
     return ReviewUI(id=review_id, product_id=product_id, review=review, rating=rating, posted_on=posted_on)
+
+
+def serialize_ads_for_page(page_id: int) -> Ad:
+    return Ad(**Ads.get_for_page(page_id))
+
+
+def serialize_ads_for_admin(pages_ids: dict[int, str]) -> list[AdUI]:
+    ads = []
+
+    for page_id, page_name in pages_ids.items():
+        ads.append(AdUI(**Ads.get_for_page(page_id), name=page_name))
+
+    return ads

@@ -164,8 +164,9 @@ async def admin(
         ads_link1: str | None = Form(None),
         ads_image1: UploadFile = File(...),
         ads_link2: str | None = Form(None),
-        ads_image2: UploadFile = File(...)
+        ads_image2: UploadFile = File(...),
+        ads_enabled: bool = Form(False)
 ):
-    await Ads.update(ads_page_id, ads_split, ads_link1, ads_image1, ads_link2, ads_image2)
+    await Ads.update(ads_page_id, ads_split, ads_link1, ads_image1, ads_link2, ads_image2, ads_enabled)
 
     return templates.TemplateResponse("admin.html", context=get_admin_context(request))
