@@ -639,21 +639,9 @@ CATEGORY
     color: #B3B3B3;
 }
 
-.admin__tables, .admin__ads, .admin__links {
+.admin__tables, .admin__ads, .admin__links, .admin__db-table {
     display: flex;
     flex-direction: column;
-}
-
-.admin__tables {
-    display: flex;
-    grid-gap: 8px;
-    padding: 18px;
-    background-color: #1E2332;
-    border-radius: 12px;
-}
-
-.admin__ads {
-    display: flex;
     grid-gap: 8px;
     padding: 18px;
     background-color: #1E2332;

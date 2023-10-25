@@ -6,7 +6,7 @@ from starlette import status
 from common.database import DatabaseSQLite
 from settings import settings
 from .services.ads import Ads
-from .schemas.category import CategoryUI
+from .schemas.category import Category, CategoryUI
 from .schemas.product import ProductUI
 from .schemas.reply import Reply
 from .schemas.review import ReviewUI
@@ -166,3 +166,12 @@ def serialize_ads_for_admin(pages_ids: dict[int, str]) -> list[AdUI]:
         ads.append(AdUI(**Ads.get_for_page(page_id), name=page_name))
 
     return ads
+
+
+def serialize_categories_for_admin() -> Optional[list[Category]]:
+    raw_categories = database.query("SELECT id, name FROM categories")
+
+    if len(raw_categories) == 0:
+        return
+
+    return [Category(id=_id, name=name) for _id, name in raw_categories]

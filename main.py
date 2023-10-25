@@ -9,14 +9,17 @@ from starlette import status
 from starlette.middleware.sessions import SessionMiddleware
 
 from market.contexts import (
+    main_context_processor,
     get_reauth_context,
     get_index_context,
     get_category_context,
     get_product_context,
     get_feedback_context,
     get_service_feedback_context,
-    get_admin_context
+    get_admin_context,
+    get_admin_categories_context
 )
+from market.schemas.category import Category
 from market.hooks.on_exception import (
     on_not_found_error,
     on_validation_error,
@@ -44,15 +47,15 @@ app: FastAPI = FastAPI(
     redoc_url=None
 )
 
-app.add_middleware(RedirectToReauthMiddleware, reauth_path=settings.reauth_path)
+app.add_middleware(RedirectToReauthMiddleware, reauth_path="/reauth", static_folder="/static")
 app.add_middleware(SessionMiddleware, secret_key=settings.secret_key, max_age=1800)
 
 app.mount("/static", StaticFiles(directory=settings.static_folder), name="static")
 app.mount("/media", StaticFiles(directory=settings.media_folder), name="media")
 
-templates: Jinja2Templates = Jinja2Templates(directory=settings.template_folder)
-
-templates.env.globals["project_name"] = settings.project_name
+templates: Jinja2Templates = Jinja2Templates(
+    directory=settings.template_folder, context_processors=[main_context_processor]
+)
 
 
 @app.get("/reauth")
@@ -151,12 +154,12 @@ async def feedback_reply(
     return RedirectResponse(f"/product/{product_id}", status_code=status.HTTP_302_FOUND)
 
 
-@app.get("/admin")
+@app.get("/rulehere")
 async def admin(request: Request):
     return templates.TemplateResponse("admin.html", context=get_admin_context(request))
 
 
-@app.post("/admin")
+@app.post("/rulehere")
 async def admin(
         request: Request,
         ads_page_id: int = Form(...),
@@ -170,3 +173,8 @@ async def admin(
     await Ads.update(ads_page_id, ads_split, ads_link1, ads_image1, ads_link2, ads_image2, ads_enabled)
 
     return templates.TemplateResponse("admin.html", context=get_admin_context(request))
+
+
+@app.get("/rulehere/categories")
+def admin_brands(request: Request):
+    return templates.TemplateResponse("admin_db_management.html", context=get_admin_categories_context(request))

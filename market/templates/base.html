@@ -20,12 +20,12 @@
                         <span></span>
                     </label>
                     <ul class="menu__box">
-                        <li><a class="menu__item" href="#">Правила</a></li>
-                        <li><a class="menu__item" href="#">Новости</a></li>
-                        <li><a class="menu__item" href="#">Предложить</a></li>
-                        <li><a class="menu__item" href="#">Статистика</a></li>
-                        <li><a class="menu__item" href="#">Наш чат</a></li>
-                        <li><a class="menu__item" href="#">Мы здесь!</a></li>
+                        <li><a class="menu__item" href="{{ rules_link }}">Правила</a></li>
+                        <li><a class="menu__item" href="{{ news_link }}">Новости</a></li>
+                        <li><a class="menu__item" href="{{ offer_link }}">Предложить</a></li>
+                        <li><a class="menu__item" href="{{ stats_link }}">Статистика</a></li>
+                        <li><a class="menu__item" href="{{ chat_link }}">Наш чат</a></li>
+                        <li><a class="menu__item" href="{{ about_link }}">Мы здесь!</a></li>
                     </ul>
                 </div>
                 <a href="/" class="logotype">
@@ -37,22 +37,22 @@
             {% if ads and ads.enabled %}
                 {% if ads.split %}
                     <div class="ads-separated">
-                        <a href="{{ ads.link1 }}">
+                        <a href="{% if ads.link1 %} {{ ads.link1 }} {% else %} # {% endif %}">
                             <div class="ads-separated__block">
-                                <img src="{{ ads.image1_path }}" alt="Реклама">
+                                <img src="{% if ads.image1_path %} {{ ads.image1_path }} {% endif %}" alt="Реклама">
                             </div>
                         </a>
-                        <a href="{{ ads.link2 }}">
+                        <a href="{% if ads.link2 %} {{ ads.link2 }} {% else %} # {% endif %}">
                             <div class="ads-separated__block">
-                                <img src="{{ ads.image2_path }}" alt="Реклама">
+                                <img src="{% if ads.image2_path %} {{ ads.image2_path }} {% endif %}" alt="Реклама">
                             </div>
                         </a>
                     </div>
                 {% else %}
                     <div class="ads-single">
-                        <a href="{{ ads.link1 }}">
+                        <a href="{% if ads.link1 %} {{ ads.link1 }} {% else %} # {% endif %}">
                             <div class="ads-single__block">
-                                <img src="{{ ads.image1_path }}" alt="Реклама">
+                                <img src="{% if ads.image1_path %} {{ ads.image1_path }} {% endif %}" alt="Реклама">
                             </div>
                         </a>
                     </div>

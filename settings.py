@@ -18,13 +18,18 @@ class Settings(BaseSettings):
     admin_login: str
     admin_password: str
 
+    rules_link: str
+    news_link: str
+    offer_link: str
+    stats_link: str
+    chat_link: str
+    about_link: str
+
     database_path: str
 
     template_folder: str
     static_folder: str
     media_folder: str
-
-    reauth_path: str
 
     recaptcha_site_key: str
     recaptcha_secret_key: str

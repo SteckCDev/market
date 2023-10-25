@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="admin">
+        <div class="admin__tables">
+            <span class="admin__caption">Менеджмент базы данных</span>
+            <a href="/rulehere/brands" class="admin__tables-table">Бренды</a>
+            <a href="/rulehere/categories" class="admin__tables-table">Категории</a>
+            <a href="/rulehere/products" class="admin__tables-table">Товары</a>
+            <a href="/rulehere/reviews" class="admin__tables-table">Отзывы</a>
+            <a href="/rulehere/replies" class="admin__tables-table">Ответы</a>
+        </div>
+        <div class="admin__db-table">
+            <span class="admin__caption">{{ table_name or "Таблица" }}</span>
+            {% if categories %}
+                {% for category in categories %}
+                    <div class="admin__db-row">
+                        {% for item in category.model_dump().values() %}
+                            <div class="admin__db-column">
+                                {{ item }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
