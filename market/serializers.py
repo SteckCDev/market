@@ -1,3 +1,4 @@
+from uuid import UUID
 from typing import Optional
 
 from fastapi.exceptions import HTTPException
@@ -11,13 +12,14 @@ from .schemas.product import ProductUI
 from .schemas.reply import Reply
 from .schemas.review import ReviewUI
 from .schemas.ad import Ad, AdUI
+from .schemas.brand_link import BrandLink
 
 
 database = DatabaseSQLite(settings.database_path)
 
 
 def _get_product_ui_additional(product_id: int, brand_id: int) -> tuple[str, float | None]:
-    brand_name: str = database.query("SELECT name FROM brands WHERE id = ?", (brand_id,))[0][0]
+    brand_name = database.query("SELECT name FROM brands WHERE id = ?", (brand_id,))[0][0]
 
     raw_reviews = database.query("SELECT rating FROM reviews WHERE product_id = ?", (product_id,))
 
@@ -40,14 +42,11 @@ def _get_replies_for_review(review_id: int) -> Optional[list[Reply]]:
     if len(raw_replies) == 0:
         return
 
-    replies = []
-
-    for reply_id, reply_body, reply_posted_on in raw_replies:
-        replies.append(
-            Reply(id=reply_id, review_id=review_id, reply=reply_body, posted_on=reply_posted_on)
-        )
-
-    return replies
+    return [
+        Reply(
+            id=_id, review_id=review_id, reply=reply_body, posted_on=reply_posted_on
+        ) for _id, reply_body, reply_posted_on in raw_replies
+    ]
 
 
 def serialize_categories() -> Optional[list[CategoryUI]]:
@@ -111,7 +110,6 @@ def serialize_single_product(product_id: int) -> ProductUI:
         )
 
     product_id, category_id, brand_id, name, description, image_url, clicks = raw_product[0]
-
     brand_name, rating = _get_product_ui_additional(product_id, brand_id)
 
     return ProductUI(
@@ -128,21 +126,18 @@ def serialize_reviews(product_id: int) -> Optional[list[ReviewUI]]:
     if len(raw_reviews) == 0:
         return
 
-    reviews = []
-
-    for review_id, review, rating, posted_on in raw_reviews:
-        reviews.append(
-            ReviewUI(
-                id=review_id, product_id=product_id, review=review, rating=rating, posted_on=posted_on,
-                replies=_get_replies_for_review(review_id)
-            )
-        )
-
-    return reviews
+    return [
+        ReviewUI(
+            id=_id, product_id=product_id, review=review, rating=rating, posted_on=posted_on,
+            replies=_get_replies_for_review(_id)
+        ) for _id, review, rating, posted_on in raw_reviews
+    ]
 
 
 def serialize_single_review(review_id: int) -> ReviewUI:
-    raw_review = database.query("SELECT product_id, review, rating, posted_on FROM reviews WHERE id = ?", (review_id,))
+    raw_review = database.query(
+        "SELECT product_id, review, rating, posted_on FROM reviews WHERE id = ?", (review_id,)
+    )
 
     if len(raw_review) == 0:
         raise HTTPException(
@@ -155,17 +150,27 @@ def serialize_single_review(review_id: int) -> ReviewUI:
     return ReviewUI(id=review_id, product_id=product_id, review=review, rating=rating, posted_on=posted_on)
 
 
+def serialize_brand_links(brand_id: UUID) -> Optional[list[BrandLink]]:
+    raw_brand_links = database.query(
+        "SELECT id, brand_id, caption, link FROM brand_links WHERE brand_id = ?", (str(brand_id),)
+    )
+
+    if len(raw_brand_links) == 0:
+        return
+
+    return [
+        BrandLink(
+            id=_id, brand_id=brand_id, caption=caption, link=link
+        ) for _id, brand_id, caption, link in raw_brand_links
+    ]
+
+
 def serialize_ads_for_page(page_id: int) -> Ad:
     return Ad(**Ads.get_for_page(page_id))
 
 
 def serialize_ads_for_admin(pages_ids: dict[int, str]) -> list[AdUI]:
-    ads = []
-
-    for page_id, page_name in pages_ids.items():
-        ads.append(AdUI(**Ads.get_for_page(page_id), name=page_name))
-
-    return ads
+    return [AdUI(**Ads.get_for_page(page_id), name=page_name) for page_id, page_name in pages_ids.items()]
 
 
 def serialize_categories_for_admin() -> Optional[list[Category]]:

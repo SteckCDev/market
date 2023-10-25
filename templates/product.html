@@ -1,42 +1,6 @@
 {% extends "base.html" %}
 
 {% block content %}
-{#    <b>{{ category_name }} -> {{ product.id }}</b>#}
-{#    <br>#}
-{#    {% if product.image_url %} <img src="{{ product.image_url }}" alt="Картинка"> {% else %} Картинки нет {% endif %}#}
-{#    <br>#}
-{#    <b>{{ product.brand_name }} {{ product.name }}</b>#}
-{#    <br>#}
-{#    {{ product.clicks }}#}
-{#    <br>#}
-{#    {{ product.description }}#}
-{#    <br>#}
-{#    {% if brand_links %}#}
-{#        {{ brand_links }}#}
-{#    {% else %}#}
-{#        Бренд не оставил ссылок#}
-{#    {% endif %}#}
-{#    <br>#}
-{#    {% if reviews %}#}
-{#        {% for review in reviews %}#}
-{#            Оценка: {{ rating }} - {{ review.posted_on }}#}
-{#            <br>#}
-{#            {{ review.review }}#}
-{#            {% if review.replies %}#}
-{#                <br>#}
-{#                {% for reply in review.replies %}#}
-{#                    Ответ представителя бренда#}
-{#                    <br>#}
-{#                    {{ reply.reply }}#}
-{#                    <br>#}
-{#                {% endfor %}#}
-{#            {% endif %}#}
-{#            <br>#}
-{#        {% endfor %}#}
-{#    {% else %}#}
-{#        Отзывов пока нет#}
-{#    {% endif %}#}
-    
     <div class="card">
         <div class="card__wrapper">
             <div class="card__image-container">
@@ -55,8 +19,8 @@
                     <div class="card__caption">Ссылки бренда</div>
                     <div class="card__links-self">
                         {% if brand_links %}
-                            {% for link, caption in brand_links %}
-                                <a href="{{ link }}">{{ caption }}</a>
+                            {% for brand_link in brand_links %}
+                                <a href="{{ brand_link.link }}">{{ brand_link.caption }}</a>
                             {% endfor %}
                         {% else %}
                             Бренд не оставил ссылок
@@ -104,7 +68,7 @@
                                                     {% endfor %}
                                                 </div>
                                                 •
-                                                <span>{{ review.posted_on }}</span>
+                                                <span>{{ review.posted_on_human_friendly }}</span>
                                             </div>
                                             <div class="card__reviews-review-actions">
                                                 <a href="/product/{{ product.id }}/feedback/{{ review.id }}/reply">

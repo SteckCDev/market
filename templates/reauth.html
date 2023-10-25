@@ -1,9 +1,12 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <form method="post" action="{{ request.url.path }}">
-        <input type="hidden" name="redirect_to" value="{{ redirect_to }}">
-        <div class="g-recaptcha" data-sitekey="{{ recaptcha_site_key }}"></div>
-        <input type="submit" value="Продолжить" class="btn-action">
-    </form>
+    <div class="reauth">
+        <div class="reauth__fill"></div>
+        <form method="post" action="{{ request.url.path }}">
+            <input type="hidden" name="redirect_to" value="{{ redirect_to }}">
+            <div class="g-recaptcha" data-sitekey="{{ recaptcha_site_key }}"></div>
+            <input type="submit" value="Продолжить" class="btn-action">
+        </form>
+    </div>
 {% endblock %}

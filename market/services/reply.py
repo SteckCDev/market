@@ -4,6 +4,7 @@ from uuid import UUID
 from common.database import DatabaseSQLite
 from settings import settings
 
+
 database = DatabaseSQLite(settings.database_path)
 
 

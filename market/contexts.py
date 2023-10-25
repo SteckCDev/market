@@ -10,6 +10,7 @@ from .serializers import (
     serialize_single_product,
     serialize_reviews,
     serialize_single_review,
+    serialize_brand_links,
     serialize_ads_for_page,
     serialize_ads_for_admin,
     serialize_categories_for_admin
@@ -88,13 +89,9 @@ def get_product_context(request: Request, product_id: int) -> dict[str, Any]:
     product = serialize_single_product(product_id)
     reviews = serialize_reviews(product_id)
 
-    category_name = database.query("SELECT name FROM categories WHERE id = ?", (product.category_id,))[0][0]
-    raw_brand_links = database.query("SELECT links FROM brands WHERE id = ?", (str(product.brand_id),))[0][0]
-
-    if raw_brand_links is None:
-        brand_links = None
-    else:
-        brand_links = [link_with_caption.split(">;<") for link_with_caption in raw_brand_links.split("<;>")]
+    category_name = database.query(
+        "SELECT name FROM categories WHERE id = ?", (product.category_id,)
+    )[0][0]
 
     return {
         "request": request,
@@ -103,7 +100,7 @@ def get_product_context(request: Request, product_id: int) -> dict[str, Any]:
         "ads": serialize_ads_for_page(page_id),
         "product": product,
         "category_name": category_name,
-        "brand_links": brand_links,
+        "brand_links": serialize_brand_links(product.brand_id),
         "reviews": reviews,
         "reviews_count": len(reviews) if reviews is not None else 0
     }
@@ -114,7 +111,9 @@ def get_feedback_context(request: Request, product_id: int, errors: list[str] | 
 
     product = serialize_single_product(product_id)
 
-    category_name = database.query("SELECT name FROM categories WHERE id = ?", (product.category_id,))[0][0]
+    category_name = database.query(
+        "SELECT name FROM categories WHERE id = ?", (product.category_id,)
+    )[0][0]
 
     return {
         "request": request,
@@ -132,7 +131,8 @@ def get_service_feedback_context(request: Request, review_id: int, errors: list[
     review = serialize_single_review(review_id)
 
     category_name = database.query(
-        "SELECT name FROM categories WHERE id = (SELECT category_id FROM products WHERE id = ?)", (review.product_id,)
+        "SELECT name FROM categories WHERE id = (SELECT category_id FROM products WHERE id = ?)",
+        (review.product_id,)
     )[0][0]
 
     return {

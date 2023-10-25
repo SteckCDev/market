@@ -30,6 +30,7 @@ from market.services.ads import Ads
 from market.services.reauth import Reauth
 from market.services.reply import Reply
 from market.services.review import Review
+from market.services.clicks import Clicks
 from settings import settings
 
 
@@ -101,6 +102,8 @@ async def category(request: Request, category_id: int):
 
 @app.get("/product/{product_id}")
 async def products(request: Request, product_id: int):
+    Clicks.try_to_count(request, product_id)
+
     return templates.TemplateResponse("product.html", context=get_product_context(request, product_id))
 
 

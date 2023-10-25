@@ -59,14 +59,14 @@
                 {% endif %}
             {% endif %}
             <main>
-                <div class="main__caption">{{ main_caption }}</div>
-                <div>
+                <div class="errors">
                     {% if errors %}
                         {% for error in errors %}
                             <span>{{ error }}</span>
                         {% endfor %}
                     {% endif %}
                 </div>
+                <div class="main__caption">{{ main_caption }}</div>
                 {% block content %}
 
                 {% endblock %}

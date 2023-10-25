@@ -18,6 +18,10 @@
                     <form method="POST" action="{{ request.url.path }}" enctype="multipart/form-data">
                         <input type="hidden" name="ads_page_id" value="{{ ad.page_id }}">
                         <label>
+                            <input type="checkbox" name="ads_enabled" {% if ad.enabled %} checked {% endif %}>
+                            Включить
+                        </label>
+                        <label>
                             <input type="checkbox" name="ads_split" {% if ad.split %} checked {% endif %}>
                             Разделить на 2 блока
                         </label>
@@ -36,10 +40,6 @@
                         <label>
                             Второй блок
                             <input type="file" name="ads_image2">
-                        </label>
-                        <label>
-                            <input type="checkbox" name="ads_enabled" {% if ad.enabled %} checked {% endif %}>
-                            Включить
                         </label>
                         <input type="submit" name="submit" value="Обновить" class="btn-action-small">
                     </form>

@@ -15,3 +15,7 @@ class Review(BaseModel):
 
 class ReviewUI(Review):
     replies: list[Reply] | None = None
+
+    @property
+    def posted_on_human_friendly(self):
+        return self.posted_on.strftime("%d.%m.%Y %H:%M")
