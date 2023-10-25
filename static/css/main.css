@@ -224,7 +224,7 @@ header {
 }
 
 .errors > span {
-    display: block;
+    text-align: center;
 }
 
 .errors > span:last-child {
@@ -701,7 +701,7 @@ CATEGORY
     color: #B3B3B3;
 }
 
-.admin__tables, .admin__ads, .admin__links, .admin__db-table {
+.admin__tables, .admin__ads, .admin__db-table {
     display: flex;
     flex-direction: column;
     grid-gap: 8px;

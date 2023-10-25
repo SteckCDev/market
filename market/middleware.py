@@ -1,6 +1,5 @@
 from fastapi import Request, HTTPException
 from fastapi.responses import RedirectResponse
-from starlette import status
 from starlette.middleware.base import BaseHTTPMiddleware
 
 from .services.admin import Admin

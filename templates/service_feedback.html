@@ -25,7 +25,7 @@
             <span class="small-caption">Ответ на отзыв</span>
             <textarea name="reply_body" class="new-answer__body" required></textarea>
             <span class="small-caption">Код сервиса</span>
-            <input type="text" name="reply_service_code" class="new-answer__service-code">
+            <input type="text" name="reply_service_code" class="new-answer__service-code" required>
             <div class="g-recaptcha" data-sitekey="{{ recaptcha_site_key }}"></div>
             <input type="submit" name="answer_send" value="Оставить отзыв" class="btn-action">
         </form>

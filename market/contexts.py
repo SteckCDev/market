@@ -32,11 +32,11 @@ def main_context_processor(_request: Request) -> dict[str, Any]:
     }
 
 
-def get_error_context(request: Request, error: str) -> dict[str, Any]:
+def get_error_context(request: Request, errors: list[str] | None = None) -> dict[str, Any]:
     return {
         "request": request,
         "title": "Произошла ошибка",
-        "error": error
+        "errors": errors
     }
 
 
