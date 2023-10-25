@@ -19,7 +19,6 @@ from market.contexts import (
     get_admin_context,
     get_admin_categories_context
 )
-from market.schemas.category import Category
 from market.hooks.on_exception import (
     on_not_found_error,
     on_validation_error,
@@ -27,10 +26,10 @@ from market.hooks.on_exception import (
 )
 from market.middleware import RedirectToReauthMiddleware
 from market.recaptcha_v2 import verify_recaptcha
+from market.services.ads import Ads
 from market.services.reauth import Reauth
 from market.services.reply import Reply
 from market.services.review import Review
-from market.services.ads import Ads
 from settings import settings
 
 
@@ -47,8 +46,17 @@ app: FastAPI = FastAPI(
     redoc_url=None
 )
 
-app.add_middleware(RedirectToReauthMiddleware, reauth_path="/reauth", static_folder="/static")
-app.add_middleware(SessionMiddleware, secret_key=settings.secret_key, max_age=1800)
+app.add_middleware(
+    RedirectToReauthMiddleware,
+    reauth_path="/reauth",
+    static_folder="/static",
+    admin_path="/rulehere"
+)
+app.add_middleware(
+    SessionMiddleware,
+    secret_key=settings.secret_key,
+    max_age=1800
+)
 
 app.mount("/static", StaticFiles(directory=settings.static_folder), name="static")
 app.mount("/media", StaticFiles(directory=settings.media_folder), name="media")
