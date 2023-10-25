@@ -3,7 +3,7 @@ from uuid import UUID
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column
 
-from . import Base
+from market.database import Base
 
 
 class BrandLink(Base):

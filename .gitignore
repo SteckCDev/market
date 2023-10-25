@@ -5,9 +5,10 @@ env/
 .env
 .log
 
+.database/
+
 commercials/*
 products/*
 
 notes
-tmp.py
-database
+*.sqlite

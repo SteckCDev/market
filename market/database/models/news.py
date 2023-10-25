@@ -4,11 +4,11 @@ from datetime import datetime
 from sqlalchemy.orm import Mapped, mapped_column
 
 from common.utc_now import utc_now
-from . import Base
+from market.database import Base
 
 
-class Reply(Base):
-    __tablename__ = "replies"
+class News(Base):
+    __tablename__ = "news"
 
     id: Mapped[UUID] = mapped_column(primary_key=True, default=uuid4)
     telegram_message_id: Mapped[int] = mapped_column(unique=True)

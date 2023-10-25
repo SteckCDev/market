@@ -15,6 +15,12 @@ class Settings(BaseSettings):
 
     secret_key: str
 
+    postgres_host: str
+    postgres_port: str
+    postgres_user: str
+    postgres_password: str
+    postgres_database: str
+
     admin_login: str
     admin_password: str
 
@@ -33,6 +39,11 @@ class Settings(BaseSettings):
 
     recaptcha_site_key: str
     recaptcha_secret_key: str
+
+    @property
+    def postgres_dsn(self) -> str:
+        return f"postgresql://{self.postgres_user}:{self.postgres_password}@" \
+               f"{self.postgres_host}:{self.postgres_port}/{self.postgres_database}"
 
 
 settings = Settings()

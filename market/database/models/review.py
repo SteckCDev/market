@@ -4,7 +4,7 @@ from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column
 
 from common.utc_now import utc_now
-from . import Base
+from market.database import Base
 
 
 class Review(Base):
