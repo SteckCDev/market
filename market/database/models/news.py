@@ -3,7 +3,7 @@ from uuid import UUID, uuid4
 
 from sqlalchemy.orm import Mapped, mapped_column
 
-from database.utc_now import utc_now
+from market.database.utc_now import utc_now
 from market.database import Base
 
 
