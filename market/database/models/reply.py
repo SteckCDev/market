@@ -3,11 +3,11 @@ from datetime import datetime
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column
 
-from common.utc_now import utc_now
+from database.utc_now import utc_now
 from market.database import Base
 
 
-class Reply(Base):
+class ReplyModel(Base):
     __tablename__ = "replies"
 
     id: Mapped[int] = mapped_column(primary_key=True)

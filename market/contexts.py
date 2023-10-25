@@ -2,7 +2,11 @@ from typing import Any
 
 from fastapi import Request
 
-from common.database import DatabaseSQLite
+from market.database import Session
+from market.database.models import (
+    CategoryModel,
+    ProductModel
+)
 from settings import settings
 from .serializers import (
     serialize_categories,
@@ -15,9 +19,6 @@ from .serializers import (
     serialize_ads_for_admin,
     serialize_categories_for_admin
 )
-
-
-database = DatabaseSQLite(settings.database_path)
 
 
 def main_context_processor(_request: Request) -> dict[str, Any]:
@@ -68,9 +69,10 @@ def get_index_context(request: Request) -> dict[str, Any]:
 def get_category_context(request: Request, category_id: int) -> dict[str, Any]:
     page_id = 3
 
-    raw_category_name = database.query("SELECT name FROM categories WHERE id = ?", (category_id,))
+    with Session() as db:
+        category: CategoryModel | None = db.get(CategoryModel, category_id)
 
-    category_name = None if len(raw_category_name) == 0 else raw_category_name[0][0]
+    category_name = None if category is None else category.name
 
     products = serialize_products(category_id)
 
@@ -89,9 +91,10 @@ def get_product_context(request: Request, product_id: int) -> dict[str, Any]:
     product = serialize_single_product(product_id)
     reviews = serialize_reviews(product_id)
 
-    category_name = database.query(
-        "SELECT name FROM categories WHERE id = ?", (product.category_id,)
-    )[0][0]
+    with Session() as db:
+        category: CategoryModel | None = db.get(CategoryModel, product.category_id)
+
+    category_name = None if category is None else category.name
 
     return {
         "request": request,
@@ -111,9 +114,10 @@ def get_feedback_context(request: Request, product_id: int, errors: list[str] | 
 
     product = serialize_single_product(product_id)
 
-    category_name = database.query(
-        "SELECT name FROM categories WHERE id = ?", (product.category_id,)
-    )[0][0]
+    with Session() as db:
+        category: CategoryModel | None = db.get(CategoryModel, product.category_id)
+
+    category_name = None if category is None else category.name
 
     return {
         "request": request,
@@ -130,10 +134,15 @@ def get_service_feedback_context(request: Request, review_id: int, errors: list[
 
     review = serialize_single_review(review_id)
 
-    category_name = database.query(
-        "SELECT name FROM categories WHERE id = (SELECT category_id FROM products WHERE id = ?)",
-        (review.product_id,)
-    )[0][0]
+    with Session() as db:
+        product: ProductModel | None = db.get(ProductModel, review.product_id)
+
+        if product is not None:
+            category: CategoryModel | None = db.get(CategoryModel, product.category_id)
+        else:
+            category = None
+
+    category_name = None if category is None else category.name
 
     return {
         "request": request,

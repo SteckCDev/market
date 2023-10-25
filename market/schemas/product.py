@@ -9,7 +9,7 @@ class Product(BaseModel):
     brand_id: UUID
     name: str
     description: str = None
-    image_url: str | None = None
+    image_path: str | None = None
     clicks: int
 
 

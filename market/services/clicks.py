@@ -1,10 +1,8 @@
 from fastapi import Request
 
-from common.database import DatabaseSQLite
-from settings import settings
+from market.database import Session
+from market.database.models import ProductModel
 
-
-database = DatabaseSQLite(settings.database_path)
 
 SESSION_KEY = "clicked_products_list"
 CLICKED: bool = True
@@ -14,8 +12,6 @@ class Clicks:
     @staticmethod
     def _is_already_counted(request: Request, product_id: int) -> bool:
         clicked_products: list | None = request.session.get(SESSION_KEY)
-
-        print(clicked_products)
 
         if clicked_products is None:
             return False
@@ -31,7 +27,10 @@ class Clicks:
         else:
             request.session[SESSION_KEY].append(product_id)
 
-        database.query("UPDATE products SET clicks = clicks + 1 WHERE id = ?", (product_id,))
+        with Session() as db:
+            product: ProductModel = db.query(ProductModel).get(product_id)
+            product.clicks += 1
+            db.commit()
 
     @staticmethod
     def try_to_count(request: Request, product_id: int) -> None:

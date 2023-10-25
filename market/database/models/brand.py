@@ -5,7 +5,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 from market.database import Base
 
 
-class Brand(Base):
+class BrandModel(Base):
     __tablename__ = "brands"
 
     id: Mapped[UUID] = mapped_column(primary_key=True, default=uuid4)

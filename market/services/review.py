@@ -1,16 +1,11 @@
-from time import time
-
-from common.database import DatabaseSQLite
-from settings import settings
-
-
-database = DatabaseSQLite(settings.database_path)
+from market.database import Session
+from market.database.models import ReviewModel
 
 
 class Review:
     @staticmethod
     def create(product_id: int, review: str, rating: int) -> None:
-        database.query(
-            "INSERT INTO reviews (product_id, review, rating, posted_on) VALUES (?, ?, ?, ?)",
-            (product_id, review, rating, int(time()))
-        )
+        with Session() as db:
+            _review = ReviewModel(product_id=product_id, review=review, rating=rating)
+            db.add(_review)
+            db.commit()

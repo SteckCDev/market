@@ -1,13 +1,13 @@
-from uuid import UUID, uuid4
 from datetime import datetime
+from uuid import UUID, uuid4
 
 from sqlalchemy.orm import Mapped, mapped_column
 
-from common.utc_now import utc_now
+from database.utc_now import utc_now
 from market.database import Base
 
 
-class News(Base):
+class NewsModel(Base):
     __tablename__ = "news"
 
     id: Mapped[UUID] = mapped_column(primary_key=True, default=uuid4)

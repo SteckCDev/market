@@ -6,7 +6,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 from market.database import Base
 
 
-class Product(Base):
+class ProductModel(Base):
     __tablename__ = "products"
 
     id: Mapped[int] = mapped_column(primary_key=True)

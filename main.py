@@ -25,12 +25,14 @@ from market.hooks.on_exception import (
     on_internal_error
 )
 from market.middleware import RedirectToReauthMiddleware
-from market.recaptcha_v2 import verify_recaptcha
-from market.services.ads import Ads
-from market.services.reauth import Reauth
-from market.services.reply import Reply
-from market.services.review import Review
-from market.services.clicks import Clicks
+from market.services import (
+    Ads,
+    Reauth,
+    Reply,
+    Review,
+    Clicks,
+    RecaptchaV2
+)
 from settings import settings
 
 
@@ -78,7 +80,7 @@ async def reauth(
         redirect_to: str = Form("/"),
         recaptcha_response: str = Form(..., alias="g-recaptcha-response")
 ):
-    if not verify_recaptcha(recaptcha_response, settings.recaptcha_secret_key):
+    if not RecaptchaV2.verify_recaptcha(recaptcha_response, settings.recaptcha_secret_key):
         errors = ["Проверка на робота не пройдена, пожалуйста, попробуйте снова"]
 
         return templates.TemplateResponse(
@@ -120,7 +122,7 @@ async def feedback(
         review_rating: int | None = Form(..., ge=1, le=5),
         recaptcha_response: str = Form(..., alias="g-recaptcha-response")
 ):
-    if not verify_recaptcha(recaptcha_response, settings.recaptcha_secret_key):
+    if not RecaptchaV2.verify_recaptcha(recaptcha_response, settings.recaptcha_secret_key):
         errors = ["Проверка на робота не пройдена, пожалуйста, попробуйте снова"]
 
         return templates.TemplateResponse(
@@ -146,7 +148,7 @@ async def feedback_reply(
         reply_service_code: UUID = Form(...),
         recaptcha_response: str = Form(..., alias="g-recaptcha-response")
 ):
-    if not verify_recaptcha(recaptcha_response, settings.recaptcha_secret_key):
+    if not RecaptchaV2.verify_recaptcha(recaptcha_response, settings.recaptcha_secret_key):
         errors = ["Проверка на робота не пройдена, пожалуйста, попробуйте снова"]
 
         return templates.TemplateResponse(

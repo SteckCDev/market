@@ -3,7 +3,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 from market.database import Base
 
 
-class Ad(Base):
+class AdModel(Base):
     __tablename__ = "ads"
 
     page_id: Mapped[int] = mapped_column(primary_key=True)

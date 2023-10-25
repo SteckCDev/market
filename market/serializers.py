@@ -1,168 +1,145 @@
-from uuid import UUID
 from typing import Optional
+from uuid import UUID
 
 from fastapi.exceptions import HTTPException
+from sqlalchemy.orm.query import Query
 from starlette import status
 
-from common.database import DatabaseSQLite
-from settings import settings
+from market.database import Session
+from .database.models import (
+    BrandModel,
+    ReplyModel,
+    ReviewModel,
+    CategoryModel,
+    ProductModel,
+    BrandLinkModel
+)
+from .schemas import (
+    Ad,
+    AdUI,
+    BrandLink,
+    Category,
+    CategoryUI,
+    ProductUI,
+    Reply,
+    ReviewUI
+)
 from .services.ads import Ads
-from .schemas.category import Category, CategoryUI
-from .schemas.product import ProductUI
-from .schemas.reply import Reply
-from .schemas.review import ReviewUI
-from .schemas.ad import Ad, AdUI
-from .schemas.brand_link import BrandLink
 
 
-database = DatabaseSQLite(settings.database_path)
+def _get_product_ui_additional(product_id: int, brand_id: UUID) -> tuple[str, float | None]:
+    with Session() as db:
+        brand: BrandModel = db.query(BrandModel).get(brand_id)
+        reviews: Query[ReviewModel] | None = db.query(ReviewModel).filter(ReviewModel.product_id == product_id)
 
+    reviews_count = reviews.count()
 
-def _get_product_ui_additional(product_id: int, brand_id: int) -> tuple[str, float | None]:
-    brand_name = database.query("SELECT name FROM brands WHERE id = ?", (brand_id,))[0][0]
+    if reviews_count == 0:
+        return brand.name, None
 
-    raw_reviews = database.query("SELECT rating FROM reviews WHERE product_id = ?", (product_id,))
+    total_rating = sum([review.rating for review in reviews])
+    rating = round(total_rating / reviews_count, 1)
 
-    if len(raw_reviews) != 0:
-        total_rating = 0
-
-        for review in raw_reviews:
-            total_rating += review[0]
-
-        rating = round(total_rating / len(raw_reviews), 1)
-    else:
-        rating = None
-
-    return brand_name, rating
+    return brand.name, rating
 
 
 def _get_replies_for_review(review_id: int) -> Optional[list[Reply]]:
-    raw_replies = database.query("SELECT id, reply, posted_on FROM replies WHERE review_id = ?", (review_id,))
+    with Session() as db:
+        replies: Query[ReplyModel] = db.query(ReplyModel).filter(ReplyModel.review_id == review_id)
 
-    if len(raw_replies) == 0:
+    if replies.count() == 0:
         return
 
-    return [
-        Reply(
-            id=_id, review_id=review_id, reply=reply_body, posted_on=reply_posted_on
-        ) for _id, reply_body, reply_posted_on in raw_replies
-    ]
+    return [Reply(**reply.__dict__) for reply in replies]
 
 
 def serialize_categories() -> Optional[list[CategoryUI]]:
-    raw_categories = database.query("SELECT id, name FROM categories")
+    with Session() as db:
+        categories: list[CategoryModel] = db.query(CategoryModel).all()
 
-    if len(raw_categories) == 0:
-        return
+        if len(categories) == 0:
+            return
 
-    categories = []
+        categories_ui = []
 
-    for category_id, category_name in raw_categories:
-        products_count = database.query(
-            "SELECT COUNT(*) FROM products WHERE category_id = ?", (category_id,)
-        )[0][0]
+        for category in categories:
+            products_count = db.query(ProductModel).filter(ProductModel.category_id == category.id).count()
 
-        if products_count == 0:
-            continue
+            if products_count == 0:
+                continue
 
-        categories.append(
-            CategoryUI(
-                id=category_id, name=category_name, products_count=products_count
+            categories_ui.append(
+                CategoryUI(id=category.id, name=category.name, products_count=products_count)
             )
-        )
 
-    return categories
+    return categories_ui
 
 
 def serialize_products(category_id: int) -> Optional[list[ProductUI]]:
-    raw_products = database.query(
-        "SELECT id, brand_id, name, image_url, clicks FROM products WHERE category_id = ?", (category_id,)
-    )
+    with Session() as db:
+        products: Query[ProductModel] = db.query(ProductModel).filter(ProductModel.category_id == category_id)
 
-    if len(raw_products) == 0:
+    if products.count() == 0:
         return
 
-    products = []
+    products_ui = []
 
-    for product_id, brand_id, product_name, image_url, product_clicks in raw_products:
-        brand_name, rating = _get_product_ui_additional(product_id, brand_id)
+    for product in products:
+        brand_name, rating = _get_product_ui_additional(product.id, product.brand_id)
 
-        products.append(
-            ProductUI(
-                id=product_id, category_id=category_id, brand_id=brand_id, name=product_name, image_url=image_url,
-                clicks=product_clicks, brand_name=brand_name, rating=rating
-            )
+        products_ui.append(
+            ProductUI(**product.__dict__, brand_name=brand_name, rating=rating)
         )
 
-    return products
+    return products_ui
 
 
 def serialize_single_product(product_id: int) -> ProductUI:
-    raw_product = database.query(
-        "SELECT id, category_id, brand_id, name, description, image_url, clicks FROM products WHERE id = ?",
-        (product_id,)
-    )
+    with Session() as db:
+        product: ProductModel | None = db.get(ProductModel, product_id)
 
-    if len(raw_product) == 0:
+    if product is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Requested product with id {product_id} that doesn't exist"
         )
 
-    product_id, category_id, brand_id, name, description, image_url, clicks = raw_product[0]
-    brand_name, rating = _get_product_ui_additional(product_id, brand_id)
+    brand_name, rating = _get_product_ui_additional(product.id, product.brand_id)
 
-    return ProductUI(
-        id=product_id, category_id=category_id, brand_id=brand_id, name=name, clicks=clicks,
-        brand_name=brand_name, rating=rating, description=description, image_url=image_url
-    )
+    return ProductUI(**product.__dict__, brand_name=brand_name, rating=rating)
 
 
 def serialize_reviews(product_id: int) -> Optional[list[ReviewUI]]:
-    raw_reviews = database.query(
-        "SELECT id, review, rating, posted_on FROM reviews WHERE product_id = ?", (product_id,)
-    )
+    with Session() as db:
+        reviews: Query[ReviewModel] = db.query(ReviewModel).filter(ReviewModel.product_id == product_id)
 
-    if len(raw_reviews) == 0:
+    if reviews.count() == 0:
         return
 
-    return [
-        ReviewUI(
-            id=_id, product_id=product_id, review=review, rating=rating, posted_on=posted_on,
-            replies=_get_replies_for_review(_id)
-        ) for _id, review, rating, posted_on in raw_reviews
-    ]
+    return [ReviewUI(**review.__dict__, replies=_get_replies_for_review(review.id)) for review in reviews]
 
 
 def serialize_single_review(review_id: int) -> ReviewUI:
-    raw_review = database.query(
-        "SELECT product_id, review, rating, posted_on FROM reviews WHERE id = ?", (review_id,)
-    )
+    with Session() as db:
+        review: ReviewModel | None = db.get(ReviewModel, review_id)
 
-    if len(raw_review) == 0:
+    if review is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Requested review with id {review_id} that doesn't exist"
         )
 
-    product_id, review, rating, posted_on = raw_review[0]
-
-    return ReviewUI(id=review_id, product_id=product_id, review=review, rating=rating, posted_on=posted_on)
+    return ReviewUI(**review.__dict__)
 
 
 def serialize_brand_links(brand_id: UUID) -> Optional[list[BrandLink]]:
-    raw_brand_links = database.query(
-        "SELECT id, brand_id, caption, link FROM brand_links WHERE brand_id = ?", (str(brand_id),)
-    )
+    with Session() as db:
+        brand_links: Query[BrandLinkModel] = db.query(BrandLinkModel).filter(BrandLinkModel.brand_id == brand_id)
 
-    if len(raw_brand_links) == 0:
+    if brand_links.count() == 0:
         return
 
-    return [
-        BrandLink(
-            id=_id, brand_id=brand_id, caption=caption, link=link
-        ) for _id, brand_id, caption, link in raw_brand_links
-    ]
+    return [BrandLink(**brand_link.__dict__) for brand_link in brand_links]
 
 
 def serialize_ads_for_page(page_id: int) -> Ad:
@@ -174,9 +151,10 @@ def serialize_ads_for_admin(pages_ids: dict[int, str]) -> list[AdUI]:
 
 
 def serialize_categories_for_admin() -> Optional[list[Category]]:
-    raw_categories = database.query("SELECT id, name FROM categories")
+    with Session() as db:
+        categories: list[CategoryModel] = db.query(CategoryModel).all()
 
-    if len(raw_categories) == 0:
+    if len(categories) == 0:
         return
 
-    return [Category(id=_id, name=name) for _id, name in raw_categories]
+    return [Category(**category.__dict__) for category in categories]
