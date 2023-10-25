@@ -1,0 +1,33 @@
+version: "3.9"
+services:
+  news_reader:
+    image: news_reader:latest
+    container_name: news_reader
+    depends_on:
+      - database
+    restart: always
+
+  market:
+    image: market:latest
+    container_name: market
+    volumes:
+      - ./media:/media
+    ports:
+      - "8000:80"
+    depends_on:
+      - database
+    restart: always
+
+  database:
+    image: postgres
+    container_name: database
+    volumes:
+      - ./.database:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DATABASE=${POSTGRES_DATABASE}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_PORT=${POSTGRES_PORT}
+    ports:
+      - "${POSTGRES_PORT}:${POSTGRES_PORT}"
+    restart: always
