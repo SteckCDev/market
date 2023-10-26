@@ -14,45 +14,56 @@ from settings import settings
 
 
 class BrandView(ModelView):
-    form_columns = ("id", "name", "access_code")
+    column_display_pk = True
+    column_list = ("id", "name", "access_code")
+    form_columns = ("name", "access_code")
 
     def __init__(self, session, **kwargs):
-        super(BrandView, self).__init__(BrandModel, session, **kwargs)
+        super(BrandView, self).__init__(BrandModel, session, "Бренды", **kwargs)
 
 
 class BrandLinkView(ModelView):
-    form_columns = ("id", "brand_id", "caption", "link")
+    column_display_pk = True
+    form_columns = ("brand_id", "caption", "link")
 
     def __init__(self, session, **kwargs):
-        super(BrandLinkView, self).__init__(BrandLinkModel, session, **kwargs)
+        super(BrandLinkView, self).__init__(BrandLinkModel, session, "Ссылки бренда", **kwargs)
 
 
 class CategoryView(ModelView):
-    form_columns = ("id", "name")
+    column_display_pk = True
+    column_list = ("id", "name")
+    form_columns = ("name",)
 
     def __init__(self, session, **kwargs):
-        super(CategoryView, self).__init__(CategoryModel, session, **kwargs)
+        super(CategoryView, self).__init__(CategoryModel, session, "Категории", **kwargs)
 
 
 class ProductView(ModelView):
-    form_columns = ("id", "category_id", "brand_id", "name", "description", "image_path", "clicks")
+    column_display_pk = True
+    column_list = ("id", "name", "clicks", "category_id", "brand_id")
+    form_columns = ("category_id", "brand_id", "name", "description", "image_path", "clicks")
 
     def __init__(self, session, **kwargs):
-        super(ProductView, self).__init__(ProductModel, session, **kwargs)
+        super(ProductView, self).__init__(ProductModel, session, "Товары", **kwargs)
 
 
 class ReplyView(ModelView):
-    form_columns = ("id", "review_id", "reply", "posted_on")
+    column_display_pk = True
+    column_list = ("id", "review_id", "reply", "posted_on")
+    form_columns = ("review_id", "reply", "posted_on")
 
     def __init__(self, session, **kwargs):
-        super(ReplyView, self).__init__(ReplyModel, session, **kwargs)
+        super(ReplyView, self).__init__(ReplyModel, session, "Ответы", **kwargs)
 
 
 class ReviewView(ModelView):
-    form_columns = ("id", "product_id", "review", "rating", "posted_on")
+    column_display_pk = True
+    column_list = ("id", "product_id", "review", "rating", "posted_on")
+    form_columns = ("product_id", "review", "rating", "posted_on")
 
     def __init__(self, session, **kwargs):
-        super(ReviewView, self).__init__(ReviewModel, session, **kwargs)
+        super(ReviewView, self).__init__(ReviewModel, session, "Отзывы", **kwargs)
 
 
 admin_app = Flask(__name__)

@@ -1,5 +1,5 @@
 from .review import Review
-from .admin import Admin
+from .admin import AdminAuth
 from .ads import Ads
 from .clicks import Clicks
 from .reauth import Reauth

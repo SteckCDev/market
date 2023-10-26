@@ -7,7 +7,7 @@ env/
 
 .database/
 
-commercials/*
-products/*
+media/commercials/*
+media/products/*
 
 notes

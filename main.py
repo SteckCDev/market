@@ -18,7 +18,8 @@ from market.contexts import (
     get_product_context,
     get_feedback_context,
     get_service_feedback_context,
-    get_admin_context,
+    get_admin_auth_context,
+    get_admin_context
 )
 from market.hooks.on_exception import (
     on_not_found_error,
@@ -28,6 +29,7 @@ from market.hooks.on_exception import (
 from market.middleware import RedirectToReauthMiddleware
 from market.services import (
     Ads,
+    AdminAuth,
     Reauth,
     Reply,
     Review,
@@ -54,7 +56,8 @@ app.add_middleware(
     RedirectToReauthMiddleware,
     reauth_path="/reauth",
     static_folder="/static",
-    admin_path="/rulehere"
+    admin_path="/admin",
+    rulehere_path="/rulehere"
 )
 app.add_middleware(
     SessionMiddleware,
@@ -133,7 +136,7 @@ async def feedback(
 
     Review.create(product_id, review_body, review_rating)
 
-    return RedirectResponse(f"/product/{product_id}", status_code=status.HTTP_302_FOUND)
+    return RedirectResponse(f"/product/{product_id}", status_code=status.HTTP_303_SEE_OTHER)
 
 
 @app.get("/product/{product_id}/feedback/{review_id}/reply/")
@@ -166,7 +169,7 @@ async def feedback_reply(
 
     Reply.create(review_id, reply_body)
 
-    return RedirectResponse(f"/product/{product_id}", status_code=status.HTTP_302_FOUND)
+    return RedirectResponse(f"/product/{product_id}", status_code=status.HTTP_303_SEE_OTHER)
 
 
 @app.get("/rulehere")
@@ -188,3 +191,34 @@ async def admin(
     await Ads.update(ads_page_id, ads_split, ads_link1, ads_image1, ads_link2, ads_image2, ads_enabled)
 
     return templates.TemplateResponse("admin.html", context=get_admin_context(request))
+
+
+@app.get("/rulehere/auth")
+async def admin_auth(request: Request):
+    return templates.TemplateResponse("admin_auth.html", context=get_admin_auth_context(request))
+
+
+@app.post("/rulehere/auth")
+async def admin_auth(
+        request: Request,
+        login: str = Form(...),
+        password: str = Form(...),
+        recaptcha_response: str = Form(..., alias="g-recaptcha-response")
+):
+    if not RecaptchaV2.verify_recaptcha(recaptcha_response, settings.recaptcha_secret_key):
+        errors = ["Проверка на робота не пройдена, пожалуйста, попробуйте снова"]
+
+        return templates.TemplateResponse(
+            "admin_auth.html", context=get_admin_auth_context(request, errors=errors)
+        )
+
+    if not AdminAuth.check_credentials(login, password):
+        errors = ["Некорректный логин или пароль"]
+
+        return templates.TemplateResponse(
+            "admin_auth.html", context=get_admin_auth_context(request, errors=errors)
+        )
+
+    AdminAuth.authenticate(request)
+
+    return RedirectResponse("/rulehere", status_code=status.HTTP_303_SEE_OTHER)

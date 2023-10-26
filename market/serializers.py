@@ -1,5 +1,4 @@
 from typing import Optional
-from uuid import UUID
 
 from fastapi.exceptions import HTTPException
 from sqlalchemy.orm.query import Query

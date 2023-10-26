@@ -17,11 +17,11 @@ from .serializers import (
     serialize_brand_links,
     serialize_ads_for_page,
     serialize_ads_for_admin,
-    serialize_categories_for_admin
 )
+from market.services import AdminAuth
 
 
-def main_context_processor(_request: Request) -> dict[str, Any]:
+def main_context_processor(request: Request) -> dict[str, Any]:
     return {
         "project_name": settings.project_name,
         "rules_link": settings.rules_link,
@@ -29,7 +29,9 @@ def main_context_processor(_request: Request) -> dict[str, Any]:
         "offer_link": settings.offer_link,
         "stats_link": settings.stats_link,
         "chat_link": settings.chat_link,
-        "about_link": settings.about_link
+        "about_link": settings.about_link,
+        "admin_link": "/admin" if AdminAuth.is_authenticated(request) else None,
+        "rulehere_link": "/rulehere" if AdminAuth.is_authenticated(request) else None
     }
 
 
@@ -155,6 +157,14 @@ def get_service_feedback_context(request: Request, review_id: int, errors: list[
     }
 
 
+def get_admin_auth_context(request: Request, errors: list[str] | None = None) -> dict[str, Any]:
+    return {
+        "request": request,
+        "recaptcha_site_key": settings.recaptcha_site_key,
+        "errors": errors
+    }
+
+
 def get_admin_context(request: Request) -> dict[str, Any]:
     ads_pages = {
         1: "Страница входа",
@@ -168,13 +178,4 @@ def get_admin_context(request: Request) -> dict[str, Any]:
     return {
         "request": request,
         "ads_for_admin": serialize_ads_for_admin(ads_pages)
-    }
-
-
-def get_admin_categories_context(request: Request) -> dict[str, Any]:
-    return {
-        "request": request,
-        "table_name": "Таблица категорий",
-        "columns": 2,
-        "categories": serialize_categories_for_admin()
     }

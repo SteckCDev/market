@@ -1,11 +1,17 @@
 from fastapi import Request
 
+from settings import settings
+
 
 SESSION_KEY: str = "superuser"
 AUTHENTICATED: bool = True
 
 
-class Admin:
+class AdminAuth:
+    @staticmethod
+    def check_credentials(login: str, password: str) -> bool:
+        return login == settings.admin_login and password == settings.admin_password
+
     @staticmethod
     def authenticate(request: Request) -> None:
         request.session[SESSION_KEY] = AUTHENTICATED

@@ -676,12 +676,25 @@ FEEDBACK, SERVICE_FEEDBACK
 
 
 /*
-CATEGORY
-CATEGORY
-CATEGORY
-CATEGORY
-CATEGORY
+ADMIN
+ADMIN
+ADMIN
+ADMIN
+ADMIN
 */
+
+.admin__auth {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.admin__auth > form {
+    display: flex;
+    flex-direction: column;
+    grid-gap: 12px;
+    width: 390px;
+}
 
 .admin {
     display: flex;

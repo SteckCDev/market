@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="admin__auth">
+        <form method="POST" action="{{ request.url.path }}">
+            <input type="text" name="login" placeholder="Логин" class="new-answer__service-code" required>
+            <input type="password" name="password" placeholder="Пароль" class="new-answer__service-code" required>
+            <div class="g-recaptcha" data-sitekey="{{ recaptcha_site_key }}"></div>
+            <input type="submit" value="Продолжить" class="btn-action">
+        </form>
+    </div>
+{% endblock %}

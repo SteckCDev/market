@@ -26,6 +26,10 @@
                         <li><a class="menu__item" target="_blank" href="{{ stats_link }}">Статистика</a></li>
                         <li><a class="menu__item" target="_blank" href="{{ chat_link }}">Наш чат</a></li>
                         <li><a class="menu__item" target="_blank" href="{{ about_link }}">Мы здесь!</a></li>
+                        {% if admin_link and rulehere_link %}
+                            <li><a class="menu__item" target="_blank" href="{{ admin_link }}">Менеджмент БД</a></li>
+                            <li><a class="menu__item" target="_blank" href="{{ rulehere_link }}">Админ-панель</a></li>
+                        {% endif %}
                     </ul>
                 </div>
                 <a href="/" class="logotype">
