@@ -2,12 +2,14 @@ from uuid import UUID
 
 from fastapi import FastAPI, Request, Form, File, UploadFile
 from fastapi.exceptions import RequestValidationError
+from fastapi.middleware.wsgi import WSGIMiddleware
 from fastapi.responses import Response, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from starlette import status
 from starlette.middleware.sessions import SessionMiddleware
 
+from market.admin import admin_app
 from market.contexts import (
     main_context_processor,
     get_reauth_context,
@@ -17,7 +19,6 @@ from market.contexts import (
     get_feedback_context,
     get_service_feedback_context,
     get_admin_context,
-    get_admin_categories_context
 )
 from market.hooks.on_exception import (
     on_not_found_error,
@@ -61,6 +62,7 @@ app.add_middleware(
     max_age=1800
 )
 
+app.mount("/admin", WSGIMiddleware(admin_app), name="admin")
 app.mount("/static", StaticFiles(directory=settings.static_folder), name="static")
 app.mount("/media", StaticFiles(directory=settings.media_folder), name="media")
 
@@ -186,8 +188,3 @@ async def admin(
     await Ads.update(ads_page_id, ads_split, ads_link1, ads_image1, ads_link2, ads_image2, ads_enabled)
 
     return templates.TemplateResponse("admin.html", context=get_admin_context(request))
-
-
-@app.get("/rulehere/categories")
-def admin_brands(request: Request):
-    return templates.TemplateResponse("admin_db_management.html", context=get_admin_categories_context(request))

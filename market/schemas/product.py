@@ -1,12 +1,10 @@
-from uuid import UUID
-
 from pydantic import BaseModel
 
 
 class Product(BaseModel):
     id: int
     category_id: int
-    brand_id: UUID
+    brand_id: int
     name: str
     description: str = None
     image_path: str | None = None

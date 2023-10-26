@@ -1,10 +1,8 @@
-from uuid import UUID
-
 from pydantic import BaseModel
 
 
 class BrandLink(BaseModel):
     id: int
-    brand_id: UUID
+    brand_id: int
     caption: str
     link: str

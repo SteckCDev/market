@@ -7,18 +7,18 @@ services:
 #      - database
 #    restart: always
 #
-  market:
-    build: .
-    container_name: market
-    volumes:
-      - ./media:/media
-    ports:
-      - "8000:80"
-    depends_on:
-      - database
-    links:
-      - database
-    restart: always
+#  market:
+#    build: .
+#    container_name: market
+#    volumes:
+#      - ./media:/media
+#    ports:
+#      - "8000:80"
+#    depends_on:
+#      - database
+#    links:
+#      - database
+#    restart: always
 
   database:
     image: postgres

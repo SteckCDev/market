@@ -2,14 +2,6 @@
 
 {% block content %}
     <div class="admin">
-        <div class="admin__tables">
-            <span class="admin__caption">Менеджмент базы данных</span>
-            <a href="/rulehere/brands" class="admin__tables-table">Бренды</a>
-            <a href="/rulehere/categories" class="admin__tables-table">Категории</a>
-            <a href="/rulehere/products" class="admin__tables-table">Товары</a>
-            <a href="/rulehere/reviews" class="admin__tables-table">Отзывы</a>
-            <a href="/rulehere/replies" class="admin__tables-table">Ответы</a>
-        </div>
         <div class="admin__ads">
             <span class="admin__caption">Реклама на страницах</span>
             {% for ad in ads_for_admin %}

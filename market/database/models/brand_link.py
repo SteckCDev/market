@@ -1,5 +1,3 @@
-from uuid import UUID
-
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -10,6 +8,6 @@ class BrandLinkModel(Base):
     __tablename__ = "brand_links"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    brand_id: Mapped[UUID] = mapped_column(ForeignKey("brands.id"))
+    brand_id: Mapped[int] = mapped_column(ForeignKey("brands.id"))
     caption: Mapped[str]
     link: Mapped[str]

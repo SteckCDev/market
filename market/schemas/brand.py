@@ -4,7 +4,7 @@ from pydantic import BaseModel
 
 
 class Brand(BaseModel):
-    id: UUID
+    id: int
     name: str
     links: str
     access_code: UUID

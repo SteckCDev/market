@@ -1,8 +1,8 @@
-"""Database init
+"""Database v2 init
 
-Revision ID: 8603468df9dc
+Revision ID: a05cadb35aa0
 Revises: 
-Create Date: 2023-10-26 01:35:01.885965
+Create Date: 2023-10-26 22:31:01.540257
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '8603468df9dc'
+revision: str = 'a05cadb35aa0'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -31,7 +31,7 @@ def upgrade() -> None:
     sa.PrimaryKeyConstraint('page_id')
     )
     op.create_table('brands',
-    sa.Column('id', sa.Uuid(), nullable=False),
+    sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(), nullable=False),
     sa.Column('access_code', sa.Uuid(), nullable=False),
     sa.PrimaryKeyConstraint('id'),
@@ -43,7 +43,7 @@ def upgrade() -> None:
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('news',
-    sa.Column('id', sa.Uuid(), nullable=False),
+    sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('telegram_message_id', sa.Integer(), nullable=False),
     sa.Column('message', sa.String(), nullable=False),
     sa.Column('posted_on', sa.DateTime(), nullable=False),
@@ -52,7 +52,7 @@ def upgrade() -> None:
     )
     op.create_table('brand_links',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('brand_id', sa.Uuid(), nullable=False),
+    sa.Column('brand_id', sa.Integer(), nullable=False),
     sa.Column('caption', sa.String(), nullable=False),
     sa.Column('link', sa.String(), nullable=False),
     sa.ForeignKeyConstraint(['brand_id'], ['brands.id'], ),
@@ -61,7 +61,7 @@ def upgrade() -> None:
     op.create_table('products',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('category_id', sa.Integer(), nullable=False),
-    sa.Column('brand_id', sa.Uuid(), nullable=False),
+    sa.Column('brand_id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(), nullable=False),
     sa.Column('description', sa.String(), nullable=False),
     sa.Column('image_path', sa.String(), nullable=True),

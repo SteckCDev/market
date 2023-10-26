@@ -8,6 +8,6 @@ from market.database import Base
 class BrandModel(Base):
     __tablename__ = "brands"
 
-    id: Mapped[UUID] = mapped_column(primary_key=True, default=uuid4)
+    id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str]
     access_code: Mapped[UUID] = mapped_column(default=uuid4, unique=True)

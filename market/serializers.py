@@ -27,7 +27,7 @@ from .schemas import (
 from .services.ads import Ads
 
 
-def _get_product_ui_additional(product_id: int, brand_id: UUID) -> tuple[str, float | None]:
+def _get_product_ui_additional(product_id: int, brand_id: int) -> tuple[str, float | None]:
     with Session() as db:
         brand: BrandModel = db.query(BrandModel).get(brand_id)
         reviews: Query[ReviewModel] | None = db.query(ReviewModel).filter(ReviewModel.product_id == product_id)
@@ -132,7 +132,7 @@ def serialize_single_review(review_id: int) -> ReviewUI:
     return ReviewUI(**review.__dict__)
 
 
-def serialize_brand_links(brand_id: UUID) -> Optional[list[BrandLink]]:
+def serialize_brand_links(brand_id: int) -> Optional[list[BrandLink]]:
     with Session() as db:
         brand_links: Query[BrandLinkModel] = db.query(BrandLinkModel).filter(BrandLinkModel.brand_id == brand_id)
 

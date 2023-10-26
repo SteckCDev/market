@@ -18,9 +18,7 @@ class RedirectToReauthMiddleware(BaseHTTPMiddleware):
         response = await call_next(request)
 
         if request.url.path.startswith(self.admin_path) and not Admin.is_authenticated(request):
-            if Reauth.is_authenticated(request):
-                return on_not_found_error(request, HTTPException(status_code=404))
-            else:
+            if not Reauth.is_authenticated(request):
                 return RedirectResponse(f"/reauth?redirect_to={request.url.path}")
 
         allowed_anyway = request.url.path.startswith((self.reauth_path, self.static_folder))
