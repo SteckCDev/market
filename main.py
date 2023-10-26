@@ -19,7 +19,8 @@ from market.contexts import (
     get_feedback_context,
     get_service_feedback_context,
     get_admin_auth_context,
-    get_admin_context
+    get_admin_context,
+    get_admin_products_context
 )
 from market.hooks.on_exception import (
     on_not_found_error,
@@ -30,6 +31,7 @@ from market.middleware import RedirectToReauthMiddleware
 from market.services import (
     Ads,
     AdminAuth,
+    AdminProducts,
     Reauth,
     Reply,
     Review,
@@ -65,9 +67,9 @@ app.add_middleware(
     max_age=1800
 )
 
-app.mount("/admin", WSGIMiddleware(admin_app), name="admin")
 app.mount("/static", StaticFiles(directory=settings.static_folder), name="static")
 app.mount("/media", StaticFiles(directory=settings.media_folder), name="media")
+app.mount("/admin", WSGIMiddleware(admin_app), name="admin")
 
 templates: Jinja2Templates = Jinja2Templates(
     directory=settings.template_folder, context_processors=[main_context_processor]
@@ -191,6 +193,23 @@ async def admin(
     await Ads.update(ads_page_id, ads_split, ads_link1, ads_image1, ads_link2, ads_image2, ads_enabled)
 
     return templates.TemplateResponse("admin.html", context=get_admin_context(request))
+
+
+@app.get("/rulehere/products")
+async def admin_products(request: Request):
+    return templates.TemplateResponse("admin_products.html", context=get_admin_products_context(request))
+
+
+@app.post("/rulehere/products/{product_id}")
+async def admin_products(
+        request: Request,
+        product_id: int,
+        image: UploadFile = File(...)
+):
+    print(image)
+    await AdminProducts.set_image(product_id, image)
+
+    return templates.TemplateResponse("admin_products.html", context=get_admin_products_context(request))
 
 
 @app.get("/rulehere/auth")

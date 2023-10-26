@@ -737,4 +737,40 @@ ADMIN
     grid-gap: 14px;
 }
 
+.admin__products {
+    display: flex;
+    flex-direction: column;
+    grid-gap: 12px;
+    width: 100%;
+    height: 100px;
+    font-size: 14px;
+}
 
+.admin__products-product {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.admin__products-product > form {
+    align-self: start;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    grid-gap: 24px;
+}
+
+.admin__products-product > form > input[type="submit"] {
+    width: 120px;
+}
+
+.admin__products-product > img {
+    align-self: end;
+    max-width: 120px;
+    max-height: 60px;
+    background-repeat     : no-repeat;
+    background-size       : cover;
+    background-position-x : 50%;
+    background-position-y : 50%;
+}

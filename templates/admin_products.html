@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="admin__products">
+        {% for product in products %}
+            <div class="admin__products-product">
+                <form method="POST" action="{{ request.url.path }}/{{ product.id }}" enctype="multipart/form-data">
+                    <input type="submit" name="submit" value="Обновить" class="btn-action-small">
+                    <input type="file" name="image">
+                    <span>({{ product.id }}) <b>{{ product.brand_name }} {{ product.name }}</b></span>
+                </form>
+                <img src="{{ product.image_path }}" alt="Нет картинки">
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

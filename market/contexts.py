@@ -10,7 +10,8 @@ from market.database.models import (
 from settings import settings
 from .serializers import (
     serialize_categories,
-    serialize_products,
+    serialize_all_products,
+    serialize_products_for_category,
     serialize_single_product,
     serialize_reviews,
     serialize_single_review,
@@ -76,7 +77,7 @@ def get_category_context(request: Request, category_id: int) -> dict[str, Any]:
 
     category_name = None if category is None else category.name
 
-    products = serialize_products(category_id)
+    products = serialize_products_for_category(category_id)
 
     return {
         "request": request,
@@ -178,4 +179,11 @@ def get_admin_context(request: Request) -> dict[str, Any]:
     return {
         "request": request,
         "ads_for_admin": serialize_ads_for_admin(ads_pages)
+    }
+
+
+def get_admin_products_context(request: Request) -> dict[str, Any]:
+    return {
+        "request": request,
+        "products": serialize_all_products(without_image_first=True)
     }

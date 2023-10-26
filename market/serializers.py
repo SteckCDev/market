@@ -19,6 +19,7 @@ from .schemas import (
     BrandLink,
     Category,
     CategoryUI,
+    Product,
     ProductUI,
     Reply,
     ReviewUI
@@ -74,7 +75,29 @@ def serialize_categories() -> Optional[list[CategoryUI]]:
     return categories_ui
 
 
-def serialize_products(category_id: int) -> Optional[list[ProductUI]]:
+def serialize_all_products(without_image_first: bool = False) -> Optional[list[ProductUI]]:
+    with Session() as db:
+        products: list[ProductModel] = db.query(ProductModel).all()
+
+    if len(products) == 0:
+        return
+
+    if without_image_first:
+        products.sort(key=lambda p: p.image_path is not None)
+
+    products_ui = []
+
+    for product in products:
+        brand_name, rating = _get_product_ui_additional(product.id, product.brand_id)
+
+        products_ui.append(
+            ProductUI(**product.__dict__, brand_name=brand_name, rating=rating)
+        )
+
+    return products_ui
+
+
+def serialize_products_for_category(category_id: int) -> Optional[list[ProductUI]]:
     with Session() as db:
         products: Query[ProductModel] = db.query(ProductModel).filter(ProductModel.category_id == category_id)
 

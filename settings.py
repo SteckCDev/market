@@ -31,8 +31,6 @@ class Settings(BaseSettings):
     chat_link: str
     about_link: str
 
-    database_path: str
-
     template_folder: str
     static_folder: str
     media_folder: str
