@@ -7,40 +7,39 @@ services:
 #      - database
 #    restart: always
 #
-  market:
-    build: .
-    container_name: market
-    volumes:
-      - ./media:/media
-    environment:
-      - PROJECT_NAME=${PROJECT_NAME}
-      - SECRET_KEY=${SECRET_KEY}
-      - POSTGRES_HOST=${POSTGRES_HOST}
-      - POSTGRES_DATABASE=${POSTGRES_DATABASE}
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_PORT=${POSTGRES_PORT}
-      - ADMIN_LOGIN=${ADMIN_LOGIN}
-      - ADMIN_PASSWORD=${ADMIN_PASSWORD}
-      - RULES_LINK=${RULES_LINK}
-      - NEWS_LINK=${NEWS_LINK}
-      - OFFER_LINK=${OFFER_LINK}
-      - STATS_LINK=${STATS_LINK}
-      - CHAT_LINK=${CHAT_LINK}
-      - ABOUT_LINK=${ABOUT_LINK}
-      - TEMPLATE_FOLDER=${TEMPLATE_FOLDER}
-      - STATIC_FOLDER=${STATIC_FOLDER}
-      - MEDIA_FOLDER=${MEDIA_FOLDER}
-      - RECAPTCHA_SITE_KEY=${RECAPTCHA_SITE_KEY}
-      - RECAPTCHA_SECRET_KEY=${RECAPTCHA_SECRET_KEY}
-    ports:
-      - "8000:80"
-    depends_on:
-      - database
-    links:
-      - database
-    hostname: host
-    restart: always
+#  market:
+#    build: .
+#    container_name: market
+#    volumes:
+#      - ./media:/media
+#    environment:
+#      - PROJECT_NAME=${PROJECT_NAME}
+#      - SECRET_KEY=${SECRET_KEY}
+#      - POSTGRES_HOST=${POSTGRES_HOST}
+#      - POSTGRES_DATABASE=${POSTGRES_DATABASE}
+#      - POSTGRES_USER=${POSTGRES_USER}
+#      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+#      - POSTGRES_PORT=${POSTGRES_PORT}
+#      - ADMIN_LOGIN=${ADMIN_LOGIN}
+#      - ADMIN_PASSWORD=${ADMIN_PASSWORD}
+#      - RULES_LINK=${RULES_LINK}
+#      - NEWS_LINK=${NEWS_LINK}
+#      - OFFER_LINK=${OFFER_LINK}
+#      - STATS_LINK=${STATS_LINK}
+#      - CHAT_LINK=${CHAT_LINK}
+#      - ABOUT_LINK=${ABOUT_LINK}
+#      - TEMPLATE_FOLDER=${TEMPLATE_FOLDER}
+#      - STATIC_FOLDER=${STATIC_FOLDER}
+#      - MEDIA_FOLDER=${MEDIA_FOLDER}
+#      - RECAPTCHA_SITE_KEY=${RECAPTCHA_SITE_KEY}
+#      - RECAPTCHA_SECRET_KEY=${RECAPTCHA_SECRET_KEY}
+#    ports:
+#      - "8000:80"
+#    depends_on:
+#      - database
+#    links:
+#      - database
+#    restart: always
 
   database:
     image: postgres

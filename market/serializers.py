@@ -19,7 +19,6 @@ from .schemas import (
     BrandLink,
     Category,
     CategoryUI,
-    Product,
     ProductUI,
     Reply,
     ReviewUI
