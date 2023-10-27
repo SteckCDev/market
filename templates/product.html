@@ -20,7 +20,7 @@
                     <div class="card__links-self">
                         {% if brand_links %}
                             {% for brand_link in brand_links %}
-                                <a href="{{ brand_link.link }}">{{ brand_link.caption }}</a>
+                                <a href="{{ brand_link.link }}" target="_blank">{{ brand_link.caption }}</a>
                             {% endfor %}
                         {% else %}
                             Бренд не оставил ссылок
